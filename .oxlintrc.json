@@ -1,0 +1,13 @@
+// Configuração do Oxlint (linter): analisa o código atrás de erros sem rodar o app.
+// Rodar com `npm run lint`. Não afeta o `npm run dev` nem o build.
+// Escolhido na criação do projeto com Vite (alternativa ao ESLint usado em projetos anteriores).
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "oxc"],
+  "rules": {
+    // Erro se useState/useEffect forem usados fora do lugar (ex.: dentro de if ou loop)
+    "react/rules-of-hooks": "error",
+    // Aviso se um arquivo de componente exportar outras coisas além de componentes
+    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+  }
+}
