@@ -1,16 +1,31 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+.explorar {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
 }
 
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  line-height: 1.5;
+.explorar form {
+  display: flex;
+  gap: 8px;
 }
 
-img {
-  max-width: 100%;
-  display: block;
+.explorar input {
+  flex: 1;
+  padding: 8px;
+}
+
+.lista-livros {
+  list-style: none;
+  padding: 0;
+}
+
+.lista-livros li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.lista-livros img {
+  width: 40px;
 }

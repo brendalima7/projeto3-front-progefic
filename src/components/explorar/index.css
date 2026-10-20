@@ -1,0 +1,15 @@
+.explorar {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.explorar form {
+  display: flex;
+  gap: 8px;
+}
+
+.explorar input {
+  flex: 1;
+  padding: 8px;
+}
