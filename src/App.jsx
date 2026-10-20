@@ -1,5 +1,5 @@
 import './App.css'
-import Explorar from './components/Explorar'
+import Explorar from './components/explorar'
 
 function App() {
   return (
