@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../api";
@@ -30,10 +31,19 @@ export default function Explorar() {
         <button type="submit">Buscar</button>
       </form>
 
-      <ul>
+      <ul className="lista-livros">
         {livros.map((livro) => (
           <li key={livro.id}>
-            {livro.title} - {livro.authors.join(", ")}
+            {/* Nem todo livro tem capa */}
+            {livro.cover_id && (
+              <img
+                src={`https://covers.openlibrary.org/b/id/${livro.cover_id}-S.jpg`}
+                alt={livro.title}
+              />
+            )}
+            <span>
+              {livro.title} - {livro.authors.join(", ")}
+            </span>
           </li>
         ))}
       </ul>
