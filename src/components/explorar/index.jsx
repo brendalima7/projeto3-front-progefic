@@ -8,16 +8,22 @@ export default function Explorar() {
   const [termo, setTermo] = useState("");
   const [livros, setLivros] = useState([]);
   const [carregando, setCarregando] = useState(false);
+  const [erro, setErro] = useState("");
 
   const buscar = (event) => {
     // Impede o formulário de recarregar a página
     event.preventDefault();
     setCarregando(true);
+    setErro("");
 
     axios
       .get(`${API_URL}/api/books/search`, { params: { q: termo } })
       .then((res) => setLivros(res.data.results))
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        // A API manda o motivo em {"erro": "..."}
+        setErro(error.response?.data?.erro || "Não foi possível buscar os livros");
+        setLivros([]);
+      })
       // Roda no fim, dando certo ou errado
       .finally(() => setCarregando(false));
   };
@@ -36,6 +42,8 @@ export default function Explorar() {
       </form>
 
       {carregando && <p>Carregando...</p>}
+
+      {erro && <p className="erro">{erro}</p>}
 
       <ul className="lista-livros">
         {livros.map((livro) => (
