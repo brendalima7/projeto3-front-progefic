@@ -9,6 +9,8 @@ export default function Explorar() {
   const [livros, setLivros] = useState([]);
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState("");
+  // Só mostra "nenhum livro" depois da primeira busca
+  const [buscou, setBuscou] = useState(false);
 
   const buscar = (event) => {
     // Impede o formulário de recarregar a página
@@ -18,7 +20,10 @@ export default function Explorar() {
 
     axios
       .get(`${API_URL}/api/books/search`, { params: { q: termo } })
-      .then((res) => setLivros(res.data.results))
+      .then((res) => {
+        setLivros(res.data.results);
+        setBuscou(true);
+      })
       .catch((error) => {
         // A API manda o motivo em {"erro": "..."}
         setErro(error.response?.data?.erro || "Não foi possível buscar os livros");
@@ -45,6 +50,10 @@ export default function Explorar() {
 
       {erro && <p className="erro">{erro}</p>}
 
+      {buscou && !carregando && !erro && livros.length === 0 && (
+        <p>Nenhum livro encontrado</p>
+      )}
+
       <ul className="lista-livros">
         {livros.map((livro) => (
           <li key={livro.id}>
@@ -56,7 +65,9 @@ export default function Explorar() {
               />
             )}
             <span>
-              {livro.title} - {livro.authors.join(", ")}
+              {livro.title}
+              {/* Alguns livros não têm autor */}
+              {livro.authors.length > 0 && ` - ${livro.authors.join(", ")}`}
             </span>
           </li>
         ))}
