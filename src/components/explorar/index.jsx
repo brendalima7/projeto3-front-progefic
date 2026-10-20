@@ -7,15 +7,19 @@ import "./index.css";
 export default function Explorar() {
   const [termo, setTermo] = useState("");
   const [livros, setLivros] = useState([]);
+  const [carregando, setCarregando] = useState(false);
 
   const buscar = (event) => {
     // Impede o formulário de recarregar a página
     event.preventDefault();
+    setCarregando(true);
 
     axios
       .get(`${API_URL}/api/books/search`, { params: { q: termo } })
       .then((res) => setLivros(res.data.results))
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error))
+      // Roda no fim, dando certo ou errado
+      .finally(() => setCarregando(false));
   };
 
   return (
@@ -30,6 +34,8 @@ export default function Explorar() {
         />
         <button type="submit">Buscar</button>
       </form>
+
+      {carregando && <p>Carregando...</p>}
 
       <ul className="lista-livros">
         {livros.map((livro) => (
