@@ -13,3 +13,40 @@
   flex: 1;
   padding: 8px;
 }
+
+.assuntos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.assunto {
+  padding: 6px 12px;
+  border: 1px solid #999;
+  border-radius: 16px;
+  background: white;
+  cursor: pointer;
+}
+
+.assunto.ativo {
+  background: #333;
+  color: white;
+}
+
+.lista-livros {
+  list-style: none;
+  padding: 0;
+}
+
+.lista-livros li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.lista-livros img {
+  width: 40px;
+}

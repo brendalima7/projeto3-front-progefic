@@ -1,37 +1,57 @@
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../api";
 import "./index.css";
 
-export default function Explorar() {
+const ASSUNTOS = [
+  { nome: "Fantasia", valor: "fantasy" },
+  { nome: "Mistério", valor: "mystery" },
+  { nome: "Romance", valor: "romance" },
+  { nome: "Ficção científica", valor: "science fiction" },
+  { nome: "Terror", valor: "horror" },
+  { nome: "Biografia", valor: "biography" },
+];
+
+export default function Explorar(props) {
   const [termo, setTermo] = useState("");
   const [livros, setLivros] = useState([]);
-  const [carregando, setCarregando] = useState(false);
+  const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
-  // Só mostra "nenhum livro" depois da primeira busca
   const [buscou, setBuscou] = useState(false);
+  const [assuntoAtual, setAssuntoAtual] = useState("fantasy");
 
-  const buscar = (event) => {
-    // Impede o formulário de recarregar a página
-    event.preventDefault();
-    setCarregando(true);
-    setErro("");
-
+  const carregarLivros = (q, tipo) => {
     axios
-      .get(`${API_URL}/api/books/search`, { params: { q: termo } })
+      .get(`${API_URL}/api/books/search`, { params: { q: q, type: tipo } })
       .then((res) => {
         setLivros(res.data.results);
         setBuscou(true);
       })
       .catch((error) => {
-        // A API manda o motivo em {"erro": "..."}
         setErro(error.response?.data?.erro || "Não foi possível buscar os livros");
         setLivros([]);
       })
-      // Roda no fim, dando certo ou errado
       .finally(() => setCarregando(false));
   };
+
+  const buscar = (event) => {
+    event.preventDefault();
+    setAssuntoAtual("");
+    setCarregando(true);
+    setErro("");
+    carregarLivros(termo, "all");
+  };
+
+  const escolherAssunto = (valor) => {
+    setAssuntoAtual(valor);
+    setCarregando(true);
+    setErro("");
+    carregarLivros(valor, "subject");
+  };
+
+  useEffect(() => {
+    carregarLivros("fantasy", "subject");
+  }, []);
 
   return (
     <div className="explorar">
@@ -46,6 +66,18 @@ export default function Explorar() {
         <button type="submit">Buscar</button>
       </form>
 
+      <div className="assuntos">
+        {ASSUNTOS.map((assunto) => (
+          <button
+            key={assunto.valor}
+            className={assunto.valor === assuntoAtual ? "assunto ativo" : "assunto"}
+            onClick={() => escolherAssunto(assunto.valor)}
+          >
+            {assunto.nome}
+          </button>
+        ))}
+      </div>
+
       {carregando && <p>Carregando...</p>}
 
       {erro && <p className="erro">{erro}</p>}
@@ -56,8 +88,7 @@ export default function Explorar() {
 
       <ul className="lista-livros">
         {livros.map((livro) => (
-          <li key={livro.id}>
-            {/* Nem todo livro tem capa */}
+          <li key={livro.id} onClick={() => props.abrirLivro(livro.id)}>
             {livro.cover_id && (
               <img
                 src={`https://covers.openlibrary.org/b/id/${livro.cover_id}-S.jpg`}
@@ -66,7 +97,6 @@ export default function Explorar() {
             )}
             <span>
               {livro.title}
-              {/* Alguns livros não têm autor */}
               {livro.authors.length > 0 && ` - ${livro.authors.join(", ")}`}
             </span>
           </li>
