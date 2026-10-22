@@ -1,3 +1,4 @@
+// Tela Explorar: busca livros por título, autor ou assunto
 
 import { useState } from "react";
 import axios from "axios";
@@ -12,14 +13,11 @@ export default function Explorar() {
   // Só mostra "nenhum livro" depois da primeira busca
   const [buscou, setBuscou] = useState(false);
 
-  const buscar = (event) => {
-    // Impede o formulário de recarregar a página
-    event.preventDefault();
-    setCarregando(true);
-    setErro("");
-
+  // Busca na API: tipo "all" vem do campo de busca
+  // Só mexe no estado quando a resposta chega
+  const carregarLivros = (q, tipo) => {
     axios
-      .get(`${API_URL}/api/books/search`, { params: { q: termo } })
+      .get(`${API_URL}/api/books/search`, { params: { q: q, type: tipo } })
       .then((res) => {
         setLivros(res.data.results);
         setBuscou(true);
@@ -31,6 +29,14 @@ export default function Explorar() {
       })
       // Roda no fim, dando certo ou errado
       .finally(() => setCarregando(false));
+  };
+
+  const buscar = (event) => {
+    // Impede o formulário de recarregar a página
+    event.preventDefault();
+    setCarregando(true);
+    setErro("");
+    carregarLivros(termo, "all");
   };
 
   return (
