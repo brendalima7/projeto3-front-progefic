@@ -1,8 +1,11 @@
+// Tela Explorar: busca livros por título, autor ou assunto
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../api";
 import "./index.css";
 
+// Nome na tela e valor que a Open Library entende
 const ASSUNTOS = [
   { nome: "Fantasia", valor: "fantasy" },
   { nome: "Mistério", valor: "mystery" },
@@ -15,11 +18,14 @@ const ASSUNTOS = [
 export default function Explorar(props) {
   const [termo, setTermo] = useState("");
   const [livros, setLivros] = useState([]);
+  // Começa true porque a tela já abre carregando as sugestões
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
+  // Só mostra "nenhum livro" depois da primeira busca
   const [buscou, setBuscou] = useState(false);
   const [assuntoAtual, setAssuntoAtual] = useState("fantasy");
 
+  // Só mexe no estado quando a resposta chega
   const carregarLivros = (q, tipo) => {
     axios
       .get(`${API_URL}/api/books/search`, { params: { q: q, type: tipo } })
@@ -28,6 +34,7 @@ export default function Explorar(props) {
         setBuscou(true);
       })
       .catch((error) => {
+        // A API manda o motivo em {"erro": "..."}
         setErro(error.response?.data?.erro || "Não foi possível buscar os livros");
         setLivros([]);
       })
@@ -49,6 +56,7 @@ export default function Explorar(props) {
     carregarLivros(valor, "subject");
   };
 
+  // Ao abrir a tela, carrega os livros de fantasia
   useEffect(() => {
     carregarLivros("fantasy", "subject");
   }, []);

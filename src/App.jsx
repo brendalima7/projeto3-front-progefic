@@ -4,6 +4,7 @@ import Explorar from './components/explorar'
 import Detalhes from './components/Detalhes'
 
 function App() {
+  // id do livro aberto; vazio = mostra a Explorar
   const [livroAberto, setLivroAberto] = useState('')
 
   return (
