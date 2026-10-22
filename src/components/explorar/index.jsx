@@ -5,6 +5,16 @@ import axios from "axios";
 import { API_URL } from "../../api";
 import "./index.css";
 
+// Assuntos fixos: nome na tela e valor que a Open Library entende
+const ASSUNTOS = [
+  { nome: "Fantasia", valor: "fantasy" },
+  { nome: "Mistério", valor: "mystery" },
+  { nome: "Romance", valor: "romance" },
+  { nome: "Ficção científica", valor: "science fiction" },
+  { nome: "Terror", valor: "horror" },
+  { nome: "Biografia", valor: "biography" },
+];
+
 export default function Explorar() {
   const [termo, setTermo] = useState("");
   const [livros, setLivros] = useState([]);
@@ -13,7 +23,7 @@ export default function Explorar() {
   // Só mostra "nenhum livro" depois da primeira busca
   const [buscou, setBuscou] = useState(false);
 
-  // Busca na API: tipo "all" vem do campo de busca
+  // Busca na API: tipo "all" vem do campo de busca, "subject" vem dos botões
   // Só mexe no estado quando a resposta chega
   const carregarLivros = (q, tipo) => {
     axios
@@ -39,6 +49,12 @@ export default function Explorar() {
     carregarLivros(termo, "all");
   };
 
+  const escolherAssunto = (valor) => {
+    setCarregando(true);
+    setErro("");
+    carregarLivros(valor, "subject");
+  };
+
   return (
     <div className="explorar">
       <h2>Explorar</h2>
@@ -51,6 +67,14 @@ export default function Explorar() {
         />
         <button type="submit">Buscar</button>
       </form>
+
+      <div className="assuntos">
+        {ASSUNTOS.map((assunto) => (
+          <button key={assunto.valor} onClick={() => escolherAssunto(assunto.valor)}>
+            {assunto.nome}
+          </button>
+        ))}
+      </div>
 
       {carregando && <p>Carregando...</p>}
 
