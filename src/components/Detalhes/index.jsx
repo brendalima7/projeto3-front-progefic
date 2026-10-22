@@ -1,3 +1,5 @@
+// Tela Detalhes: mostra as informações de um livro
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../api";
@@ -5,6 +7,7 @@ import "./index.css";
 
 export default function Detalhes(props) {
   const [livro, setLivro] = useState(null);
+  // Começa true porque a tela já abre buscando o livro
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
 
@@ -20,6 +23,7 @@ export default function Detalhes(props) {
 
   return (
     <div className="detalhes">
+      {/* voltar vem do App: fecha os detalhes */}
       <button onClick={props.voltar}>Voltar</button>
 
       {carregando && <p>Carregando...</p>}
