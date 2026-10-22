@@ -12,7 +12,7 @@ const ASSUNTOS = [
   { nome: "Biografia", valor: "biography" },
 ];
 
-export default function Explorar() {
+export default function Explorar(props) {
   const [termo, setTermo] = useState("");
   const [livros, setLivros] = useState([]);
   const [carregando, setCarregando] = useState(true);
@@ -20,7 +20,6 @@ export default function Explorar() {
   const [buscou, setBuscou] = useState(false);
   const [assuntoAtual, setAssuntoAtual] = useState("fantasy");
 
-  
   const carregarLivros = (q, tipo) => {
     axios
       .get(`${API_URL}/api/books/search`, { params: { q: q, type: tipo } })
@@ -29,16 +28,13 @@ export default function Explorar() {
         setBuscou(true);
       })
       .catch((error) => {
-        
         setErro(error.response?.data?.erro || "Não foi possível buscar os livros");
         setLivros([]);
       })
-      
       .finally(() => setCarregando(false));
   };
 
   const buscar = (event) => {
-    
     event.preventDefault();
     setAssuntoAtual("");
     setCarregando(true);
@@ -53,7 +49,6 @@ export default function Explorar() {
     carregarLivros(valor, "subject");
   };
 
-  
   useEffect(() => {
     carregarLivros("fantasy", "subject");
   }, []);
@@ -93,8 +88,7 @@ export default function Explorar() {
 
       <ul className="lista-livros">
         {livros.map((livro) => (
-          <li key={livro.id}>
-            {/* Nem todo livro tem capa */}
+          <li key={livro.id} onClick={() => props.abrirLivro(livro.id)}>
             {livro.cover_id && (
               <img
                 src={`https://covers.openlibrary.org/b/id/${livro.cover_id}-S.jpg`}
@@ -103,7 +97,6 @@ export default function Explorar() {
             )}
             <span>
               {livro.title}
-              {/* Alguns livros não têm autor */}
               {livro.authors.length > 0 && ` - ${livro.authors.join(", ")}`}
             </span>
           </li>

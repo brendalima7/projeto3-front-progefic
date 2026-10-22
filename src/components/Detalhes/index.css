@@ -1,0 +1,26 @@
+.detalhes {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.detalhes-conteudo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+  margin-top: 16px;
+}
+
+.detalhes-conteudo img {
+  width: 180px;
+}
+
+.detalhes-conteudo > div {
+  flex: 1;
+  min-width: 240px;
+}
+
+.descricao {
+  white-space: pre-line;
+}
