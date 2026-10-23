@@ -46,6 +46,10 @@ export default function Explorar(props) {
   // Só mostra "nenhum livro" depois da primeira busca
   const [buscou, setBuscou] = useState(false);
   const [assuntoAtual, setAssuntoAtual] = useState("fantasy");
+  // Sugestões que aparecem embaixo do campo enquanto a pessoa digita
+  const [sugestoes, setSugestoes] = useState([]);
+  const [buscandoSugestoes, setBuscandoSugestoes] = useState(false);
+  const [mostrarSugestoes, setMostrarSugestoes] = useState(false);
 
   // Só mexe no estado quando a resposta chega
   const carregarLivros = (q, tipo) => {
@@ -65,6 +69,7 @@ export default function Explorar(props) {
 
   const buscar = (event) => {
     event.preventDefault();
+    setMostrarSugestoes(false);
     setAssuntoAtual("");
     setCarregando(true);
     setErro("");
@@ -83,18 +88,98 @@ export default function Explorar(props) {
     carregarLivros("fantasy", "subject");
   }, []);
 
+  const digitar = (texto) => {
+    setTermo(texto);
+    setMostrarSugestoes(true);
+    setBuscandoSugestoes(true);
+  };
+
+  // A Open Library só aceita buscas com pelo menos 3 letras
+  const poucoTexto = termo.trim().length < 3;
+
+  // Sugestões: espera meio segundo sem digitar antes de buscar
+  useEffect(() => {
+    if (termo.trim().length < 3) {
+      return;
+    }
+
+    // Ignora respostas de buscas antigas (se a pessoa continuou digitando)
+    let atual = true;
+
+    const espera = setTimeout(() => {
+      axios
+        .get(`${API_URL}/api/books/search`, { params: { q: termo } })
+        .then((res) => {
+          if (atual) setSugestoes(res.data.results.slice(0, 6));
+        })
+        .catch(() => {
+          if (atual) setSugestoes([]);
+        })
+        .finally(() => {
+          if (atual) setBuscandoSugestoes(false);
+        });
+    }, 500);
+
+    // Roda quando o termo muda de novo: cancela a espera e a busca anterior
+    return () => {
+      atual = false;
+      clearTimeout(espera);
+    };
+  }, [termo]);
+
   return (
     <div className="explorar">
       <h2>Explorar</h2>
 
-      <form onSubmit={buscar}>
-        <input
-          value={termo}
-          onChange={(e) => setTermo(e.target.value)}
-          placeholder="Título, autor ou assunto"
-        />
-        <button type="submit">Buscar</button>
-      </form>
+      <div className="busca">
+        <form onSubmit={buscar}>
+          <input
+            value={termo}
+            onChange={(e) => digitar(e.target.value)}
+            onFocus={() => setMostrarSugestoes(true)}
+            // Clicar fora do campo fecha as sugestões
+            onBlur={() => setMostrarSugestoes(false)}
+            placeholder="Título, autor ou assunto"
+          />
+          <button type="submit">Buscar</button>
+        </form>
+
+        {mostrarSugestoes && termo.trim() && (
+          <ul className="sugestoes">
+            {poucoTexto && <li className="sugestao-info">Continue digitando...</li>}
+
+            {!poucoTexto && buscandoSugestoes && (
+              <li className="sugestao-info">Buscando...</li>
+            )}
+
+            {!poucoTexto && !buscandoSugestoes && sugestoes.length === 0 && (
+              <li className="sugestao-info">Nenhuma sugestão</li>
+            )}
+
+            {!poucoTexto &&
+              !buscandoSugestoes &&
+              sugestoes.map((livro) => (
+                // onMouseDown (e não onClick) roda antes do campo perder o foco
+                <li
+                  key={livro.id}
+                  className="sugestao"
+                  onMouseDown={() => props.abrirLivro(livro.id)}
+                >
+                  {livro.cover_id && (
+                    <img
+                      src={`https://covers.openlibrary.org/b/id/${livro.cover_id}-S.jpg`}
+                      alt={livro.title}
+                    />
+                  )}
+                  <div>
+                    <strong>{livro.title}</strong>
+                    {livro.authors.length > 0 && <span>{livro.authors.join(", ")}</span>}
+                  </div>
+                </li>
+              ))}
+          </ul>
+        )}
+      </div>
 
       <div className="assuntos">
         {ASSUNTOS.map((assunto) => (
