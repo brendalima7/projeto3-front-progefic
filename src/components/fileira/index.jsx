@@ -1,154 +1,74 @@
-
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../api";
-import Fileira from "../fileira";
 import "./index.css";
 
-// Nome na tela e valor que a Open Library entende
-const ASSUNTOS = [
-  { nome: "Fantasia", valor: "fantasy" },
-  { nome: "Mistério", valor: "mystery" },
-  { nome: "Romance", valor: "romance" },
-  { nome: "Ficção científica", valor: "science fiction" },
-  { nome: "Terror", valor: "horror" },
-  { nome: "Biografia", valor: "biography" },
-];
-
-// Gêneros que podem ser sorteados para as fileiras
-const GENEROS = [
-  { nome: "Fantasia", valor: "fantasy" },
-  { nome: "Mistério", valor: "mystery" },
-  { nome: "Romance", valor: "romance" },
-  { nome: "Ficção científica", valor: "science fiction" },
-  { nome: "Terror", valor: "horror" },
-  { nome: "Biografia", valor: "biography" },
-  { nome: "Aventura", valor: "adventure" },
-  { nome: "História", valor: "history" },
-  { nome: "Poesia", valor: "poetry" },
-  { nome: "Infantil", valor: "juvenile fiction" },
-];
-
-// Embaralha a lista e pega os primeiros n (sem repetir)
-const sortear = (lista, n) => [...lista].sort(() => Math.random() - 0.5).slice(0, n);
-
-export default function Explorar(props) {
-  // Sorteia 4 gêneros uma vez só, quando a tela abre
-  const [sorteados] = useState(() => sortear(GENEROS, 4));
-  // Página aleatória da fileira "Descubra", pra mudar a cada visita
-  const [paginaDescubra] = useState(() => Math.floor(Math.random() * 10) + 1);
-
-  const [termo, setTermo] = useState("");
+export default function Fileira(props) {
   const [livros, setLivros] = useState([]);
-  // Começa true porque a tela já abre carregando as sugestões
+  // Começa true porque a fileira já abre buscando os livros
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
-  // Só mostra "nenhum livro" depois da primeira busca
-  const [buscou, setBuscou] = useState(false);
-  const [assuntoAtual, setAssuntoAtual] = useState("fantasy");
+  // Aponta pra faixa de capas, pra as setas conseguirem rolar ela
+  const faixa = useRef(null);
 
-  // Só mexe no estado quando a resposta chega
-  const carregarLivros = (q, tipo) => {
+  // Busca os livros do assunto quando a fileira aparece
+  useEffect(() => {
     axios
-      .get(`${API_URL}/api/books/search`, { params: { q: q, type: tipo } })
-      .then((res) => {
-        setLivros(res.data.results);
-        setBuscou(true);
+      .get(`${API_URL}/api/books/search`, {
+        params: { q: props.assunto, type: "subject", page: props.pagina || 1 },
       })
+      .then((res) => setLivros(res.data.results))
       .catch((error) => {
         // A API manda o motivo em {"erro": "..."}
-        setErro(error.response?.data?.erro || "Não foi possível buscar os livros");
-        setLivros([]);
+        setErro(error.response?.data?.erro || "Não foi possível carregar os livros");
       })
       .finally(() => setCarregando(false));
-  };
+  }, [props.assunto, props.pagina]);
 
-  const buscar = (event) => {
-    event.preventDefault();
-    setAssuntoAtual("");
-    setCarregando(true);
-    setErro("");
-    carregarLivros(termo, "all");
+  // direcao: -1 = esquerda, 1 = direita; anda 2 capas (120px + 12px de espaço cada)
+  const rolar = (direcao) => {
+    faixa.current.scrollBy({
+      left: direcao * 2 * (120 + 12),
+      behavior: "smooth",
+    });
   };
-
-  const escolherAssunto = (valor) => {
-    setAssuntoAtual(valor);
-    setCarregando(true);
-    setErro("");
-    carregarLivros(valor, "subject");
-  };
-
-  // Ao abrir a tela, carrega os livros de fantasia
-  useEffect(() => {
-    carregarLivros("fantasy", "subject");
-  }, []);
 
   return (
-    <div className="explorar">
-      <h2>Explorar</h2>
-
-      <form onSubmit={buscar}>
-        <input
-          value={termo}
-          onChange={(e) => setTermo(e.target.value)}
-          placeholder="Título, autor ou assunto"
-        />
-        <button type="submit">Buscar</button>
-      </form>
-
-      <div className="assuntos">
-        {ASSUNTOS.map((assunto) => (
-          <button
-            key={assunto.valor}
-            className={assunto.valor === assuntoAtual ? "assunto ativo" : "assunto"}
-            onClick={() => escolherAssunto(assunto.valor)}
-          >
-            {assunto.nome}
-          </button>
-        ))}
-      </div>
-
-      {/* O primeiro gênero sorteado vira "Descubra", com uma página aleatória */}
-      <Fileira
-        titulo="Descubra"
-        assunto={sorteados[0].valor}
-        pagina={paginaDescubra}
-        abrirLivro={props.abrirLivro}
-      />
-
-      {sorteados.slice(1).map((genero) => (
-        <Fileira
-          key={genero.valor}
-          titulo={genero.nome}
-          assunto={genero.valor}
-          abrirLivro={props.abrirLivro}
-        />
-      ))}
+    <section className="fileira">
+      <h3>{props.titulo}</h3>
 
       {carregando && <p>Carregando...</p>}
 
       {erro && <p className="erro">{erro}</p>}
 
-      {buscou && !carregando && !erro && livros.length === 0 && (
-        <p>Nenhum livro encontrado</p>
-      )}
+      <div className="fileira-carrossel">
+        <button className="seta seta-esquerda" onClick={() => rolar(-1)}>
+          ‹
+        </button>
 
-      <ul className="lista-livros">
-        {livros.map((livro) => (
-          <li key={livro.id} onClick={() => props.abrirLivro(livro.id)}>
-            {livro.cover_id && (
-              <img
-                src={`https://covers.openlibrary.org/b/id/${livro.cover_id}-S.jpg`}
-                alt={livro.title}
-              />
-            )}
-            <span>
-              {livro.title}
-              {livro.authors.length > 0 && ` - ${livro.authors.join(", ")}`}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
+        <div className="fileira-livros" ref={faixa}>
+          {livros.map((livro) => (
+            // abrirLivro vem da Explorar (que recebe do App)
+            <div
+              key={livro.id}
+              className="fileira-livro"
+              onClick={() => props.abrirLivro(livro.id)}
+            >
+              {livro.cover_id && (
+                <img
+                  src={`https://covers.openlibrary.org/b/id/${livro.cover_id}-M.jpg`}
+                  alt={livro.title}
+                />
+              )}
+              <p>{livro.title}</p>
+            </div>
+          ))}
+        </div>
+
+        <button className="seta seta-direita" onClick={() => rolar(1)}>
+          ›
+        </button>
+      </div>
+    </section>
   );
 }
