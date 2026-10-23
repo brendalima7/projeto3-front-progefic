@@ -14,3 +14,8 @@ img {
   max-width: 100%;
   display: block;
 }
+
+/* Mensagens de erro de todas as telas */
+.erro {
+  color: #c0392b;
+}

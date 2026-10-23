@@ -3,6 +3,7 @@ import './App.css'
 import Explorar from './components/explorar'
 import Detalhes from './components/Detalhes'
 import Login from './components/login'
+import Cadastro from './components/cadastro'
 
 function App() {
   // id do livro aberto; vazio = mostra a Explorar
@@ -11,6 +12,8 @@ function App() {
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   // true = mostra a tela de login
   const [mostrarLogin, setMostrarLogin] = useState(false)
+  // true = mostra o cadastro no lugar do login
+  const [criandoConta, setCriandoConta] = useState(false)
   // Livro clicado por quem não fez login; abre depois que a pessoa entrar
   const [livroPendente, setLivroPendente] = useState('')
 
@@ -24,16 +27,21 @@ function App() {
     }
   }
 
-  // Chamado pelo Login quando dá certo: abre o livro que estava esperando (se tiver)
+  // Chamado pelo Login ou pelo Cadastro quando dá certo: abre o livro que estava esperando (se tiver)
   const entrou = (novoToken) => {
     setToken(novoToken)
     setMostrarLogin(false)
+    setCriandoConta(false)
     setLivroAberto(livroPendente)
     setLivroPendente('')
   }
 
-  // Sai da tela de login sem entrar
+  // No cadastro, volta pro login; no login, volta pra Explorar
   const voltarDoLogin = () => {
+    if (criandoConta) {
+      setCriandoConta(false)
+      return
+    }
     setMostrarLogin(false)
     setLivroPendente('')
   }
@@ -49,7 +57,11 @@ function App() {
     return (
       <>
         <button onClick={voltarDoLogin}>Voltar</button>
-        <Login onLogin={entrou} />
+        {criandoConta ? (
+          <Cadastro onLogin={entrou} />
+        ) : (
+          <Login onLogin={entrou} irParaCadastro={() => setCriandoConta(true)} />
+        )}
       </>
     )
   }

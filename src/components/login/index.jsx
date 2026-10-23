@@ -52,8 +52,10 @@ export default function Login(props) {
 
         {erro && <p className="erro">{erro}</p>}
 
-        {/* A tela de cadastro vem no passo 6 */}
-        <p className="cadastre-se">Cadastre-se</p>
+        {/* irParaCadastro vem do App: troca pra tela de cadastro */}
+        <button className="cadastre-se" onClick={props.irParaCadastro}>
+          Cadastre-se
+        </button>
       </div>
     </div>
   );
