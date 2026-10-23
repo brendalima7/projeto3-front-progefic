@@ -6,12 +6,19 @@
   margin-bottom: 8px;
 }
 
-/* Capas lado a lado, rolando pro lado */
+.fileira-carrossel {
+  position: relative;
+}
+
 .fileira-livros {
   display: flex;
   gap: 12px;
   overflow-x: auto;
-  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+
+.fileira-livros::-webkit-scrollbar {
+  display: none;
 }
 
 .fileira-livro {
@@ -26,7 +33,6 @@
   border-radius: 4px;
 }
 
-/* Título com no máximo 2 linhas */
 .fileira-livro p {
   margin: 4px 0 0;
   font-size: 0.85em;
@@ -35,4 +41,31 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.seta {
+  position: absolute;
+  top: 70px;
+  width: 36px;
+  height: 40px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.seta:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.seta-esquerda {
+  left: 4px;
+}
+
+.seta-direita {
+  right: 4px;
 }
