@@ -5,7 +5,6 @@ import { API_URL } from "../../api";
 import Fileira from "../fileira";
 import "./index.css";
 
-// Nome na tela e valor que a Open Library entende
 const ASSUNTOS = [
   { nome: "Fantasia", valor: "fantasy" },
   { nome: "Mistério", valor: "mystery" },
@@ -15,7 +14,6 @@ const ASSUNTOS = [
   { nome: "Biografia", valor: "biography" },
 ];
 
-// Gêneros que podem ser sorteados para as fileiras
 const GENEROS = [
   { nome: "Fantasia", valor: "fantasy" },
   { nome: "Mistério", valor: "mystery" },
@@ -29,29 +27,26 @@ const GENEROS = [
   { nome: "Infantil", valor: "juvenile fiction" },
 ];
 
-// Embaralha a lista e pega os primeiros n (sem repetir)
 const sortear = (lista, n) => [...lista].sort(() => Math.random() - 0.5).slice(0, n);
 
 export default function Explorar(props) {
-  // Sorteia 4 gêneros uma vez só, quando a tela abre
+
   const [sorteados] = useState(() => sortear(GENEROS, 4));
-  // Página aleatória da fileira "Descubra", pra mudar a cada visita
+
   const [paginaDescubra] = useState(() => Math.floor(Math.random() * 10) + 1);
 
   const [termo, setTermo] = useState("");
   const [livros, setLivros] = useState([]);
-  // Começa true porque a tela já abre carregando as sugestões
-  const [carregando, setCarregando] = useState(true);
+  const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState("");
-  // Só mostra "nenhum livro" depois da primeira busca
+
   const [buscou, setBuscou] = useState(false);
-  const [assuntoAtual, setAssuntoAtual] = useState("fantasy");
-  // Sugestões que aparecem embaixo do campo enquanto a pessoa digita
+  const [assuntoAtual, setAssuntoAtual] = useState("");
+
   const [sugestoes, setSugestoes] = useState([]);
   const [buscandoSugestoes, setBuscandoSugestoes] = useState(false);
   const [mostrarSugestoes, setMostrarSugestoes] = useState(false);
 
-  // Só mexe no estado quando a resposta chega
   const carregarLivros = (q, tipo) => {
     axios
       .get(`${API_URL}/api/books/search`, { params: { q: q, type: tipo } })
@@ -83,27 +78,19 @@ export default function Explorar(props) {
     carregarLivros(valor, "subject");
   };
 
-  // Ao abrir a tela, carrega os livros de fantasia
-  useEffect(() => {
-    carregarLivros("fantasy", "subject");
-  }, []);
-
   const digitar = (texto) => {
     setTermo(texto);
     setMostrarSugestoes(true);
     setBuscandoSugestoes(true);
   };
 
-  // A Open Library só aceita buscas com pelo menos 3 letras
   const poucoTexto = termo.trim().length < 3;
 
-  // Sugestões: espera meio segundo sem digitar antes de buscar
   useEffect(() => {
     if (termo.trim().length < 3) {
       return;
     }
 
-    // Ignora respostas de buscas antigas (se a pessoa continuou digitando)
     let atual = true;
 
     const espera = setTimeout(() => {
@@ -120,7 +107,6 @@ export default function Explorar(props) {
         });
     }, 500);
 
-    // Roda quando o termo muda de novo: cancela a espera e a busca anterior
     return () => {
       atual = false;
       clearTimeout(espera);
