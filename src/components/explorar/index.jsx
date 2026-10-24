@@ -277,22 +277,23 @@ export default function Explorar(props) {
             <p>Nenhum livro encontrado</p>
           )}
 
-          <ul className="lista-livros">
+          <div className="grade-livros">
             {livros.map((livro) => (
-              <li key={livro.id} onClick={() => props.abrirLivro(livro.id)}>
+              <div
+                key={livro.id}
+                className="grade-livro"
+                onClick={() => props.abrirLivro(livro.id)}
+              >
                 {livro.cover_id && (
                   <img
-                    src={`https://covers.openlibrary.org/b/id/${livro.cover_id}-S.jpg`}
+                    src={`https://covers.openlibrary.org/b/id/${livro.cover_id}-M.jpg`}
                     alt={livro.title}
                   />
                 )}
-                <span>
-                  {livro.title}
-                  {livro.authors.length > 0 && ` - ${livro.authors.join(", ")}`}
-                </span>
-              </li>
+                <p>{livro.title}</p>
+              </div>
             ))}
-          </ul>
+          </div>
         </>
       )}
     </div>

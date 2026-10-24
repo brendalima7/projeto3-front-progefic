@@ -35,21 +35,34 @@
   color: white;
 }
 
-.lista-livros {
-  list-style: none;
-  padding: 0;
+/* Resultados da busca: capas em grade, quantas couberem por linha */
+.grade-livros {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
 }
 
-.lista-livros li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+.grade-livro {
   cursor: pointer;
 }
 
-.lista-livros img {
-  width: 40px;
+.grade-livro img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Título com no máximo 2 linhas */
+.grade-livro p {
+  margin: 4px 0 0;
+  font-size: 0.85em;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Base pra caixa de sugestões ficar logo embaixo do campo */
