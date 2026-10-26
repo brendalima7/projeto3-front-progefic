@@ -1,0 +1,71 @@
+.fileira {
+  margin-top: 24px;
+}
+
+.fileira h3 {
+  margin-bottom: 8px;
+}
+
+.fileira-carrossel {
+  position: relative;
+}
+
+.fileira-livros {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.fileira-livros::-webkit-scrollbar {
+  display: none;
+}
+
+.fileira-livro {
+  flex: 0 0 120px;
+  cursor: pointer;
+}
+
+.fileira-livro img {
+  width: 120px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.fileira-livro p {
+  margin: 4px 0 0;
+  font-size: 0.85em;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.seta {
+  position: absolute;
+  top: 70px;
+  width: 36px;
+  height: 40px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.seta:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.seta-esquerda {
+  left: 4px;
+}
+
+.seta-direita {
+  right: 4px;
+}
