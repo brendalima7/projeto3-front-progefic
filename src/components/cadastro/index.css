@@ -1,0 +1,46 @@
+.cadastro {
+  display: flex;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+.cadastro-caixa {
+  width: 100%;
+  max-width: 520px;
+  padding: 32px;
+  border: 1px solid #999;
+}
+
+.cadastro-caixa h1 {
+  text-align: center;
+}
+
+.cadastro-caixa form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Nome do campo à esquerda e caixa de texto ocupando o resto */
+.cadastro-caixa label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cadastro-caixa input {
+  flex: 1;
+  padding: 6px 16px;
+  border: 1px solid #999;
+  border-radius: 20px;
+}
+
+/* Botão no canto direito, como no desenho */
+.cadastro-caixa button {
+  align-self: flex-end;
+  padding: 6px 20px;
+  border: 1px solid #333;
+  border-radius: 20px;
+  background: white;
+  cursor: pointer;
+}
