@@ -1,38 +1,7 @@
-
 .explorar {
   max-width: 720px;
   margin: 0 auto;
   padding: 16px;
-}
-
-.explorar form {
-  display: flex;
-  gap: 8px;
-}
-
-.explorar input {
-  flex: 1;
-  padding: 8px;
-}
-
-.assuntos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.assunto {
-  padding: 6px 12px;
-  border: 1px solid #999;
-  border-radius: 16px;
-  background: white;
-  cursor: pointer;
-}
-
-.assunto.ativo {
-  background: #333;
-  color: white;
 }
 
 /* Resultados da busca: capas em grade, quantas couberem por linha */
@@ -56,64 +25,9 @@
 
 /* Título com no máximo 2 linhas */
 .grade-livro p {
-  margin: 4px 0 0;
-  font-size: 0.85em;
-  line-height: 1.2;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-/* Base pra caixa de sugestões ficar logo embaixo do campo */
-.busca {
-  position: relative;
-}
-
-.sugestoes {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 2;
-  margin: 4px 0 0;
-  padding: 0;
-  list-style: none;
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.sugestao {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 10px;
-  cursor: pointer;
-}
-
-.sugestao:hover {
-  background: #f2f2f2;
-}
-
-.sugestao img {
-  width: 32px;
-  height: 48px;
-  object-fit: cover;
-}
-
-.sugestao div {
-  display: flex;
-  flex-direction: column;
-}
-
-.sugestao span {
-  font-size: 0.85em;
-  color: #666;
-}
-
-.sugestao-info {
-  padding: 8px 10px;
-  color: #666;
 }

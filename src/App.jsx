@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import Topo from './components/topo'
 import Explorar from './components/explorar'
 import Detalhes from './components/Detalhes'
 import Login from './components/login'
@@ -16,6 +17,21 @@ function App() {
   const [criandoConta, setCriandoConta] = useState(false)
   // Livro clicado por quem não fez login; abre depois que a pessoa entrar
   const [livroPendente, setLivroPendente] = useState('')
+  // O que a Explorar mostra: '' = início, um gênero (ex.: 'fantasy') ou 'busca'
+  const [secao, setSecao] = useState('')
+  // Texto buscado pela lupa (usado quando secao = 'busca')
+  const [termoBusca, setTermoBusca] = useState('')
+  // Trocar de seção pelo topo fecha o livro que estiver aberto
+  const mudarSecao = (novaSecao) => {
+    setSecao(novaSecao)
+    setLivroAberto('')
+  }
+
+  // Chamado pela lupa do topo quando a pessoa aperta Enter
+  const buscar = (termo) => {
+    setTermoBusca(termo)
+    mudarSecao('busca')
+  }
 
   // Sem login, clicar num livro leva pro Login
   const abrirLivro = (id) => {
@@ -68,20 +84,20 @@ function App() {
 
   return (
     <>
-      <header className="topo">
-        <h1>BookSpace</h1>
-        {/* Por enquanto botões simples; depois vão pro menu ☰ */}
-        {token ? (
-          <button onClick={sair}>Sair</button>
-        ) : (
-          <button onClick={() => setMostrarLogin(true)}>Entrar</button>
-        )}
-      </header>
+      <Topo
+        secao={secao}
+        mudarSecao={mudarSecao}
+        buscar={buscar}
+        abrirLivro={abrirLivro}
+        logado={token !== ''}
+        entrar={() => setMostrarLogin(true)}
+        sair={sair}
+      />
 
       {livroAberto ? (
         <Detalhes id={livroAberto} voltar={() => setLivroAberto('')} />
       ) : (
-        <Explorar abrirLivro={abrirLivro} />
+        <Explorar secao={secao} termoBusca={termoBusca} abrirLivro={abrirLivro} />
       )}
     </>
   )
