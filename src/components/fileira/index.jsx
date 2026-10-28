@@ -23,24 +23,32 @@ export default function Fileira(props) {
     // Ignora a resposta de buscas antigas (só a última conta)
     let atual = true;
 
-    axios
-      .get(`${API_URL}/api/books/search`, {
-        params: { q: props.assunto, type: "subject", page: pagina },
-      })
-      .then((res) => {
-        if (!atual) return;
-        setLivros(res.data.results);
-        // Deu certo: apaga erro de alguma tentativa anterior
-        setErro("");
-      })
-      .catch((error) => {
-        if (!atual) return;
-        // A API manda o motivo em {"erro": "..."}
-        setErro(error.response?.data?.erro || "Não foi possível carregar os livros");
-      })
-      .finally(() => {
-        if (atual) setCarregando(false);
-      });
+    // Se falhar na 1ª tentativa, espera 1 segundo e tenta mais uma vez
+    const carregar = (tentativa) => {
+      axios
+        .get(`${API_URL}/api/books/search`, {
+          params: { q: props.assunto, type: "subject", page: pagina },
+        })
+        .then((res) => {
+          if (!atual) return;
+          setLivros(res.data.results);
+          // Deu certo: apaga erro de alguma tentativa anterior
+          setErro("");
+          setCarregando(false);
+        })
+        .catch((error) => {
+          if (!atual) return;
+          if (tentativa === 1) {
+            setTimeout(() => carregar(2), 1000);
+            return;
+          }
+          // A API manda o motivo em {"erro": "..."}
+          setErro(error.response?.data?.erro || "Não foi possível carregar os livros");
+          setCarregando(false);
+        });
+    };
+
+    carregar(1);
 
     // Roda quando a fileira sai da tela ou o assunto muda: descarta esta busca
     return () => {
@@ -60,8 +68,6 @@ export default function Fileira(props) {
     <section className="fileira">
       <h3>{props.titulo}</h3>
 
-      {carregando && <p>Carregando...</p>}
-
       {erro && <p className="erro">{erro}</p>}
 
       <div className="fileira-carrossel">
@@ -70,6 +76,10 @@ export default function Fileira(props) {
         </button>
 
         <div className="fileira-livros" ref={faixa}>
+          {/* Enquanto carrega: 8 retângulos piscando no lugar das capas */}
+          {carregando &&
+            [1, 2, 3, 4, 5, 6, 7, 8].map((n) => <div key={n} className="capa-esqueleto" />)}
+
           {livros.map((livro) => (
             // abrirLivro vem da Explorar (que recebe do App)
             <div

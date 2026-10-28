@@ -58,6 +58,21 @@
   overflow: hidden;
 }
 
+/* Retângulo piscando no lugar da capa enquanto carrega */
+.capa-esqueleto {
+  flex: 0 0 180px;
+  height: 270px;
+  border-radius: var(--raio);
+  background: var(--cor-esqueleto);
+  animation: piscar 1.2s ease-in-out infinite;
+}
+
+@keyframes piscar {
+  50% {
+    opacity: 0.5;
+  }
+}
+
 /* Setas no meio da altura das capas; só aparecem com o mouse em cima da fileira */
 .seta {
   position: absolute;
