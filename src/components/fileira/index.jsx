@@ -4,7 +4,7 @@ import { API_URL } from "../../api";
 import "./index.css";
 
 // Tamanho de cada capa (o espaço entre elas é 12px)
-const LARGURA_CAPA = 120;
+const LARGURA_CAPA = 180;
 
 export default function Fileira(props) {
   // pagina="aleatoria": sorteia uma página de 3 a 12 uma vez, quando a fileira aparece

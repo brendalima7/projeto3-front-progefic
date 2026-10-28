@@ -1,13 +1,13 @@
 .explorar {
-  max-width: 720px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 16px 32px;
 }
 
 /* Resultados da busca: capas em grade, quantas couberem por linha */
 .grade-livros {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
   margin-top: 16px;
 }
@@ -25,8 +25,8 @@
 
 /* Título com no máximo 2 linhas */
 .grade-livro p {
-  margin: 4px 0 0;
-  font-size: 0.85em;
+  margin: 6px 0 0;
+  font-size: 1em;
   line-height: 1.2;
   display: -webkit-box;
   -webkit-line-clamp: 2;
