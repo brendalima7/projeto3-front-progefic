@@ -1,19 +1,21 @@
 .detalhes {
-  max-width: 720px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 24px 32px 48px;
 }
 
 .detalhes-conteudo {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
+  gap: 32px;
   align-items: flex-start;
-  margin-top: 16px;
+  margin-top: 20px;
 }
 
 .detalhes-conteudo img {
-  width: 180px;
+  width: 240px;
+  border-radius: 12px;
+  box-shadow: var(--sombra-forte);
 }
 
 .detalhes-conteudo > div {
@@ -21,6 +23,13 @@
   min-width: 240px;
 }
 
+.detalhes-conteudo h2 {
+  margin-top: 0;
+  font-size: 2.2em;
+  line-height: 1.2;
+}
+
 .descricao {
   white-space: pre-line;
+  color: var(--cor-texto-suave);
 }

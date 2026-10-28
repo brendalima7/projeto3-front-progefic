@@ -1,13 +1,23 @@
 .topo {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
   align-items: center;
-  gap: 24px;
-  padding: 8px 32px;
-  border-bottom: 1px solid #ddd;
+  gap: 28px;
+  padding: 12px 32px;
+  background: var(--cor-topo);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--cor-borda);
 }
 
+/* Logo com degradê de azul no texto */
 .logo {
   margin: 0;
+  background: var(--degrade-logo);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   font-size: 1.6em;
   white-space: nowrap;
   cursor: pointer;
@@ -26,22 +36,23 @@
 
 .topo-genero {
   height: 36px;
-  padding: 0 12px;
+  padding: 0 14px;
   border: none;
-  border-radius: 18px;
+  border-radius: var(--raio);
   background: none;
-  font-size: 1em;
+  color: var(--cor-texto-suave);
   white-space: nowrap;
-  cursor: pointer;
 }
 
 .topo-genero:hover {
-  background: #eee;
+  color: var(--cor-texto);
 }
 
+/* Ativo: fundo azul clarinho e texto azul */
 .topo-genero.ativo {
-  background: #333;
-  color: white;
+  background: var(--cor-destaque-suave);
+  color: var(--cor-destaque);
+  font-weight: 600;
 }
 
 /* Base pra lista do menu ficar logo embaixo do ☰ */
@@ -50,10 +61,10 @@
 }
 
 .menu-botao {
+  padding: 0 6px;
   border: none;
   background: none;
   font-size: 1.6em;
-  cursor: pointer;
 }
 
 .menu-fundo {
@@ -67,26 +78,26 @@
   top: 100%;
   right: 0;
   z-index: 4;
-  min-width: 140px;
-  margin: 4px 0 0;
-  padding: 4px 0;
+  min-width: 170px;
+  margin: 10px 0 0;
+  padding: 6px;
   list-style: none;
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: var(--cor-cartao);
+  border: 1px solid var(--cor-borda);
+  border-radius: 12px;
+  box-shadow: var(--sombra-forte);
 }
 
 .menu-itens button {
   width: 100%;
-  padding: 8px 16px;
+  padding: 8px 12px;
   border: none;
+  border-radius: 8px;
   background: none;
   text-align: left;
-  font-size: 1em;
-  cursor: pointer;
 }
 
 .menu-itens button:hover {
-  background: #f2f2f2;
+  background: var(--cor-destaque-suave);
+  color: var(--cor-destaque);
 }

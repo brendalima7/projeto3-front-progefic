@@ -1,20 +1,25 @@
 .fileira {
-  margin-top: 24px;
+  margin-top: 28px;
 }
 
 .fileira h3 {
-  margin-bottom: 8px;
+  margin: 0 0 10px;
+  font-size: 1.35em;
 }
 
+/* Base pras setas ficarem por cima das capas */
 .fileira-carrossel {
   position: relative;
 }
 
+/* Capas lado a lado, rolando pro lado (sem barra aparecendo) */
 .fileira-livros {
   display: flex;
   gap: 12px;
   overflow-x: auto;
   scrollbar-width: none;
+  /* Espaço pra capa subir no hover sem ser cortada */
+  padding: 10px 4px;
 }
 
 .fileira-livros::-webkit-scrollbar {
@@ -30,12 +35,22 @@
   width: 180px;
   height: 270px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
+/* Passar o mouse: a capa sobe um pouco e ganha mais sombra */
+.fileira-livro:hover img {
+  transform: translateY(-6px);
+  box-shadow: var(--sombra-forte);
+}
+
+/* Título com no máximo 2 linhas */
 .fileira-livro p {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-size: 1em;
+  font-weight: 500;
   line-height: 1.2;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -43,19 +58,27 @@
   overflow: hidden;
 }
 
+/* Setas no meio da altura das capas; só aparecem com o mouse em cima da fileira */
 .seta {
   position: absolute;
-  top: 115px;
-  width: 36px;
-  height: 40px;
-  border: none;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  font-size: 28px;
-  line-height: 1;
-  cursor: pointer;
+  top: 123px;
   z-index: 1;
+  width: 40px;
+  height: 56px;
+  padding: 0;
+  border: none;
+  border-radius: var(--raio);
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(6px);
+  color: white;
+  font-size: 32px;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.fileira-carrossel:hover .seta {
+  opacity: 1;
 }
 
 .seta:hover {

@@ -8,10 +8,17 @@
   width: 100%;
   max-width: 520px;
   padding: 32px;
-  border: 1px solid #999;
+  border: 1px solid var(--cor-borda);
+  border-radius: 16px;
+  background: var(--cor-cartao);
+  box-shadow: var(--sombra);
 }
 
 .cadastro-caixa h1 {
+  background: var(--degrade-logo);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   text-align: center;
 }
 
@@ -31,16 +38,24 @@
 .cadastro-caixa input {
   flex: 1;
   padding: 6px 16px;
-  border: 1px solid #999;
-  border-radius: 20px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  background: var(--cor-fundo);
 }
 
 /* Botão no canto direito, como no desenho */
 .cadastro-caixa button {
   align-self: flex-end;
-  padding: 6px 20px;
-  border: 1px solid #333;
-  border-radius: 20px;
-  background: white;
-  cursor: pointer;
+  padding: 8px 28px;
+  border: none;
+  border-radius: var(--raio);
+  background: var(--cor-destaque);
+  color: var(--cor-texto-no-destaque);
+  font-weight: 600;
+}
+
+/* Botão principal: no hover só clareia, sem mudar a cor do texto */
+.cadastro-caixa button[type="submit"]:hover {
+  color: var(--cor-texto-no-destaque);
+  filter: brightness(1.1);
 }
