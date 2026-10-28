@@ -3,6 +3,7 @@ import axios from "axios";
 import { API_URL } from "../../api";
 import { GENEROS } from "../../generos";
 import Fileira from "../fileira";
+import Destaque from "../destaque";
 import "./index.css";
 
 // Embaralha a lista e pega os primeiros n (sem repetir)
@@ -47,9 +48,11 @@ export default function Explorar(props) {
 
   return (
     <div className="explorar">
-      {/* Início: 4 fileiras sorteadas */}
+      {/* Início: banner de destaque e 4 fileiras sorteadas */}
       {props.secao === "" && (
         <>
+          <Destaque abrirLivro={props.abrirLivro} />
+
           {/* O primeiro gênero sorteado vira "Descubra", com uma página aleatória */}
           <Fileira
             titulo="Descubra"

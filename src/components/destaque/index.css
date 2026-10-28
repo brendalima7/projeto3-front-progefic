@@ -1,0 +1,106 @@
+.destaque {
+  margin-top: 16px;
+}
+
+/* Banner: capa à esquerda e texto à direita, por cima do fundo desfocado */
+.destaque-conteudo {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 40px;
+  min-height: 400px;
+  padding: 40px 48px;
+  border-radius: 16px;
+  color: white;
+}
+
+.destaque-fundo {
+  position: absolute;
+  inset: -40px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(30px) brightness(0.45);
+}
+
+/* Capa e texto ficam na frente do fundo */
+.destaque-capa,
+.destaque-texto {
+  position: relative;
+}
+
+.destaque-capa {
+  width: 210px;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.destaque-texto {
+  flex: 1;
+  min-width: 260px;
+  max-width: 640px;
+}
+
+.destaque-etiqueta {
+  color: #93c5fd;
+  font-size: 0.8em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.destaque-texto h2 {
+  margin: 8px 0;
+  font-size: 2.6em;
+  line-height: 1.1;
+}
+
+.destaque-info {
+  margin: 0 0 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Descrição com no máximo 4 linhas */
+.destaque-descricao {
+  margin: 0 0 24px;
+  color: rgba(255, 255, 255, 0.85);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.destaque-botoes {
+  display: flex;
+  gap: 12px;
+}
+
+.destaque-principal {
+  padding: 10px 24px;
+  border: none;
+  background: var(--cor-destaque);
+  color: white;
+  font-weight: 600;
+}
+
+.destaque-outro {
+  padding: 10px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+/* No hover os botões só clareiam (o texto continua branco) */
+.destaque-principal:hover,
+.destaque-outro:hover {
+  color: white;
+  filter: brightness(1.15);
+}
+
+.destaque-esqueleto {
+  height: 400px;
+  border-radius: 16px;
+  background: var(--cor-esqueleto);
+  animation: piscar 1.2s ease-in-out infinite;
+}
