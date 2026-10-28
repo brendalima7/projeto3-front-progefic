@@ -56,6 +56,12 @@ export default function Topo(props) {
             <div className="menu-fundo" onClick={() => setMenuAberto(false)} />
 
             <ul className="menu-itens">
+              <li>
+                <button onClick={() => clicarNoMenu(props.trocarTema)}>
+                  {props.tema === "escuro" ? "Tema claro" : "Tema escuro"}
+                </button>
+              </li>
+
               {props.logado ? (
                 <>
                   {/* A página de perfil vem depois */}

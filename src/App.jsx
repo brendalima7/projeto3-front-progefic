@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import Topo from './components/topo'
 import Explorar from './components/explorar'
@@ -21,6 +21,19 @@ function App() {
   const [secao, setSecao] = useState('')
   // Texto buscado pela lupa (usado quando secao = 'busca')
   const [termoBusca, setTermoBusca] = useState('')
+  // Tema do site: 'escuro' ou 'claro' (fica salvo no navegador)
+  const [tema, setTema] = useState(localStorage.getItem('tema') || 'escuro')
+
+  // Aplica o tema na página: o index.css troca as cores pelo data-tema
+  useEffect(() => {
+    document.documentElement.dataset.tema = tema
+    localStorage.setItem('tema', tema)
+  }, [tema])
+
+  const trocarTema = () => {
+    setTema(tema === 'escuro' ? 'claro' : 'escuro')
+  }
+
   // Trocar de seção pelo topo fecha o livro que estiver aberto
   const mudarSecao = (novaSecao) => {
     setSecao(novaSecao)
@@ -92,6 +105,8 @@ function App() {
         logado={token !== ''}
         entrar={() => setMostrarLogin(true)}
         sair={sair}
+        tema={tema}
+        trocarTema={trocarTema}
       />
 
       {livroAberto ? (
