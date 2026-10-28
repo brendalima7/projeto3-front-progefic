@@ -1,0 +1,92 @@
+.topo {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 8px 32px;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo {
+  margin: 0;
+  font-size: 1.6em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Uma linha só: os gêneros que não couberem descem e ficam escondidos */
+.topo-generos {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 4px;
+  overflow: hidden;
+}
+
+.topo-genero {
+  height: 36px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 18px;
+  background: none;
+  font-size: 1em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.topo-genero:hover {
+  background: #eee;
+}
+
+.topo-genero.ativo {
+  background: #333;
+  color: white;
+}
+
+/* Base pra lista do menu ficar logo embaixo do ☰ */
+.menu {
+  position: relative;
+}
+
+.menu-botao {
+  border: none;
+  background: none;
+  font-size: 1.6em;
+  cursor: pointer;
+}
+
+.menu-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+}
+
+.menu-itens {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 4;
+  min-width: 140px;
+  margin: 4px 0 0;
+  padding: 4px 0;
+  list-style: none;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.menu-itens button {
+  width: 100%;
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.menu-itens button:hover {
+  background: #f2f2f2;
+}
