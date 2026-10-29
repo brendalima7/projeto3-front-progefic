@@ -10,8 +10,8 @@ import "./index.css";
 const sortear = (lista, n) => [...lista].sort(() => Math.random() - 0.5).slice(0, n);
 
 export default function Explorar(props) {
-  // Sorteia 4 gêneros uma vez só, quando a tela abre
-  const [sorteados] = useState(() => sortear(GENEROS, 4));
+  // Sorteia 3 gêneros uma vez só, quando a tela abre
+  const [sorteados] = useState(() => sortear(GENEROS, 3));
   // Resultado da busca e o termo a que ele pertence
   const [resultado, setResultado] = useState({ termo: "", livros: [], erro: "" });
 
@@ -48,7 +48,7 @@ export default function Explorar(props) {
 
   return (
     <div className="explorar">
-      {/* Início: banner de destaque e 4 fileiras sorteadas */}
+      {/* Início: banner de destaque e 3 fileiras sorteadas */}
       {props.secao === "" && (
         <>
           <Destaque abrirLivro={props.abrirLivro} />

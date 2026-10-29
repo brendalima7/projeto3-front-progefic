@@ -6,7 +6,5 @@ export const GENEROS = [
   { nome: "Terror", valor: "horror" },
   { nome: "Aventura", valor: "adventure" },
   { nome: "Biografia", valor: "biography" },
-  { nome: "História", valor: "history" },
   { nome: "Infantil", valor: "juvenile fiction" },
-  { nome: "Poesia", valor: "poetry" },
 ];
