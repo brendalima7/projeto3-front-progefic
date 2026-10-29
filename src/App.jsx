@@ -5,6 +5,7 @@ import Explorar from './components/explorar'
 import Detalhes from './components/Detalhes'
 import Login from './components/login'
 import Cadastro from './components/cadastro'
+import Perfil from './components/perfil'
 
 function App() {
   // id do livro aberto; vazio = mostra a Explorar
@@ -23,6 +24,8 @@ function App() {
   const [termoBusca, setTermoBusca] = useState('')
   // Tema do site: 'escuro' ou 'claro' (fica salvo no navegador)
   const [tema, setTema] = useState(localStorage.getItem('tema') || 'escuro')
+  // true = mostra a tela de perfil
+  const [mostrarPerfil, setMostrarPerfil] = useState(false)
 
   // Aplica o tema na página: o index.css troca as cores pelo data-tema
   useEffect(() => {
@@ -34,9 +37,16 @@ function App() {
     setTema(tema === 'escuro' ? 'claro' : 'escuro')
   }
 
-  // Trocar de seção pelo topo fecha o livro que estiver aberto
+  // Trocar de seção pelo topo fecha o livro e o perfil, se estiverem abertos
   const mudarSecao = (novaSecao) => {
     setSecao(novaSecao)
+    setLivroAberto('')
+    setMostrarPerfil(false)
+  }
+
+  // Chamado pelo item "Perfil" do menu ☰
+  const abrirPerfil = () => {
+    setMostrarPerfil(true)
     setLivroAberto('')
   }
 
@@ -49,6 +59,7 @@ function App() {
   // Sem login, clicar num livro leva pro Login
   const abrirLivro = (id) => {
     if (token) {
+      // O perfil continua "aberto" por trás: "Voltar" nos Detalhes volta pra ele
       setLivroAberto(id)
     } else {
       setLivroPendente(id)
@@ -80,6 +91,7 @@ function App() {
     localStorage.removeItem('token')
     setToken('')
     setLivroAberto('')
+    setMostrarPerfil(false)
   }
 
   if (mostrarLogin) {
@@ -98,7 +110,8 @@ function App() {
   return (
     <>
       <Topo
-        secao={secao}
+        // No perfil, nenhum gênero fica destacado no topo
+        secao={mostrarPerfil ? null : secao}
         mudarSecao={mudarSecao}
         buscar={buscar}
         abrirLivro={abrirLivro}
@@ -107,11 +120,15 @@ function App() {
         sair={sair}
         tema={tema}
         trocarTema={trocarTema}
+        abrirPerfil={abrirPerfil}
       />
 
-      {livroAberto ? (
-        <Detalhes id={livroAberto} voltar={() => setLivroAberto('')} />
-      ) : (
+      {/* Livro aberto aparece por cima de tudo; "Voltar" volta pra tela de antes */}
+      {livroAberto && <Detalhes id={livroAberto} voltar={() => setLivroAberto('')} />}
+
+      {!livroAberto && mostrarPerfil && <Perfil token={token} abrirLivro={abrirLivro} />}
+
+      {!livroAberto && !mostrarPerfil && (
         <Explorar secao={secao} termoBusca={termoBusca} abrirLivro={abrirLivro} />
       )}
     </>

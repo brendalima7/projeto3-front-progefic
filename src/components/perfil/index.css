@@ -1,0 +1,43 @@
+/* Mesma largura e margens da Explorar, pra manter a identidade */
+.perfil {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 32px 48px;
+}
+
+/* Título no mesmo estilo dos títulos das fileiras */
+.perfil h2 {
+  margin: 28px 0 14px;
+  font-size: 1.35em;
+}
+
+/* Caixa com as linhas, alinhada à esquerda */
+.perfil-caixa {
+  max-width: 720px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 14px;
+  background: var(--cor-cartao);
+}
+
+/* Cada linha: rótulo, valor e a ação no canto direito; traço fino entre elas */
+.perfil-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 18px 24px;
+}
+
+.perfil-linha + .perfil-linha {
+  border-top: 1px solid var(--cor-borda);
+}
+
+.perfil-rotulo {
+  width: 90px;
+  color: var(--cor-texto-suave);
+  font-weight: 600;
+}
+
+.perfil-valor {
+  flex: 1;
+}

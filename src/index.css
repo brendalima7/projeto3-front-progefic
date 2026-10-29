@@ -7,12 +7,13 @@
   --cor-texto-suave: #64748b;
   --cor-destaque: #2563eb;
   --cor-destaque-suave: rgba(37, 99, 235, 0.12);
+  /* Azul pra texto: no escuro precisa ser mais claro pra parecer o mesmo azul dos botões */
+  --cor-destaque-texto: #2563eb;
   --cor-texto-no-destaque: #ffffff;
   --cor-esqueleto: #e8edf5;
   --cor-erro: #dc2626;
   --sombra: 0 2px 8px rgba(15, 23, 42, 0.08);
   --sombra-forte: 0 12px 28px rgba(15, 23, 42, 0.18);
-  --degrade-logo: linear-gradient(90deg, #2563eb, #06b6d4);
 
   --fonte-texto: "Inter", system-ui, sans-serif;
   --fonte-titulo: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
@@ -29,12 +30,12 @@
   --cor-texto-suave: #93a3bd;
   --cor-destaque: #3b82f6;
   --cor-destaque-suave: rgba(59, 130, 246, 0.18);
+  --cor-destaque-texto: #60a5fa;
   --cor-texto-no-destaque: #ffffff;
   --cor-esqueleto: #1a2438;
   --cor-erro: #f87171;
   --sombra: 0 2px 10px rgba(0, 0, 0, 0.35);
   --sombra-forte: 0 14px 32px rgba(0, 0, 0, 0.55);
-  --degrade-logo: linear-gradient(90deg, #60a5fa, #22d3ee);
 }
 
 *,
@@ -83,7 +84,7 @@ button {
 
 button:hover {
   border-color: var(--cor-destaque);
-  color: var(--cor-destaque);
+  color: var(--cor-destaque-texto);
 }
 
 input {

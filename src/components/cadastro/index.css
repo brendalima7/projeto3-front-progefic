@@ -15,10 +15,7 @@
 }
 
 .cadastro-caixa h1 {
-  background: var(--degrade-logo);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--cor-destaque-texto);
   text-align: center;
 }
 
