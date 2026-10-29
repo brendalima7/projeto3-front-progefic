@@ -1,0 +1,28 @@
+/* Número de livros ao lado do título da estante */
+.estante-quantidade {
+  margin-left: 6px;
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-texto);
+  font-size: 0.7em;
+  font-weight: 500;
+}
+
+.estante-vazia {
+  margin: 0;
+  color: var(--cor-texto-suave);
+}
+
+/* Livro sem capa: quadro do tamanho de uma capa com o título no meio */
+.estante-sem-capa {
+  width: 180px;
+  height: 270px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  background: var(--cor-esqueleto);
+  color: var(--cor-texto-suave);
+  text-align: center;
+}
