@@ -41,3 +41,61 @@
 .perfil-valor {
   flex: 1;
 }
+
+/* "Editar" e "Mudar": texto azul, sem cara de botão */
+.perfil-acao {
+  padding: 4px 8px;
+  border: none;
+  background: none;
+  color: var(--cor-destaque);
+  font-weight: 600;
+}
+
+.perfil-acao:hover {
+  text-decoration: underline;
+}
+
+/* Campos que aparecem ao editar, ocupando o lugar do valor */
+.perfil-form {
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.perfil-form input {
+  padding: 9px 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+.perfil-botoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.perfil-salvar {
+  border: none;
+  background: var(--cor-destaque);
+  color: var(--cor-texto-no-destaque);
+  font-weight: 600;
+}
+
+.perfil-salvar:hover {
+  color: var(--cor-texto-no-destaque);
+  filter: brightness(1.1);
+}
+
+/* Mensagem embaixo da linha, alinhada com o valor */
+.perfil-mensagem {
+  flex-basis: 100%;
+  margin: 0 0 0 106px;
+}
+
+.perfil-aviso {
+  color: var(--cor-destaque);
+}
