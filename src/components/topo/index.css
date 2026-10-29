@@ -11,13 +11,10 @@
   border-bottom: 1px solid var(--cor-borda);
 }
 
-/* Logo com degradê de azul no texto */
+/* Logo na cor de destaque do tema */
 .logo {
   margin: 0;
-  background: var(--degrade-logo);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--cor-destaque-texto);
   font-size: 1.6em;
   white-space: nowrap;
   cursor: pointer;
@@ -51,7 +48,7 @@
 /* Ativo: fundo azul clarinho e texto azul */
 .topo-genero.ativo {
   background: var(--cor-destaque-suave);
-  color: var(--cor-destaque);
+  color: var(--cor-destaque-texto);
   font-weight: 600;
 }
 
@@ -99,5 +96,5 @@
 
 .menu-itens button:hover {
   background: var(--cor-destaque-suave);
-  color: var(--cor-destaque);
+  color: var(--cor-destaque-texto);
 }
