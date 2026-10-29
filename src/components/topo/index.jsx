@@ -64,9 +64,8 @@ export default function Topo(props) {
 
               {props.logado ? (
                 <>
-                  {/* A página de perfil vem depois */}
                   <li>
-                    <button onClick={() => setMenuAberto(false)}>Perfil</button>
+                    <button onClick={() => clicarNoMenu(props.abrirPerfil)}>Perfil</button>
                   </li>
                   <li>
                     <button onClick={() => clicarNoMenu(props.sair)}>Sair</button>
