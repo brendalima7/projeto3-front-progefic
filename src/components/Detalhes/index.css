@@ -1,35 +1,130 @@
+/* Mesma largura e margens da Explorar e do Perfil */
 .detalhes {
-  max-width: 960px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 24px 32px 48px;
+  padding: 16px 32px 48px;
 }
 
+/* "‹ Voltar": link discreto, sem cara de botão */
+.detalhes-voltar {
+  padding: 4px 0;
+  border: none;
+  background: none;
+  color: var(--cor-texto-suave);
+  font-weight: 600;
+}
+
+.detalhes-voltar:hover {
+  color: var(--cor-destaque-texto);
+}
+
+/* Capa à esquerda e informações à direita */
 .detalhes-conteudo {
   display: flex;
   flex-wrap: wrap;
-  gap: 32px;
+  gap: 48px;
   align-items: flex-start;
   margin-top: 20px;
 }
 
-.detalhes-conteudo img {
-  width: 240px;
+.detalhes-capa {
+  width: 300px;
+  max-width: 100%;
   border-radius: 12px;
   box-shadow: var(--sombra-forte);
 }
 
-.detalhes-conteudo > div {
+.detalhes-texto {
   flex: 1;
-  min-width: 240px;
+  min-width: 260px;
+  max-width: 820px;
 }
 
-.detalhes-conteudo h2 {
-  margin-top: 0;
-  font-size: 2.2em;
-  line-height: 1.2;
+.detalhes-etiqueta {
+  margin: 0;
+  color: var(--cor-destaque-texto);
+  font-size: 0.8em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.detalhes-texto h2 {
+  margin: 8px 0;
+  font-size: 2.6em;
+  line-height: 1.1;
+}
+
+.detalhes-info {
+  margin: 0;
+  color: var(--cor-texto-suave);
+  font-size: 1.1em;
+}
+
+/* Sinopse e Assuntos: separadas por uma linha fina */
+.detalhes-secao {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--cor-borda);
+}
+
+.detalhes-secao h3 {
+  margin: 0 0 10px;
+  font-size: 1.1em;
 }
 
 .descricao {
+  margin: 0;
   white-space: pre-line;
   color: var(--cor-texto-suave);
+  line-height: 1.7;
+}
+
+/* Sinopse longa: mostra só 6 linhas até clicar em "Ler mais" */
+.descricao.cortada {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.detalhes-ler-mais {
+  margin-top: 8px;
+  padding: 4px 0;
+  border: none;
+  background: none;
+  color: var(--cor-destaque-texto);
+  font-weight: 600;
+}
+
+.detalhes-ler-mais:hover {
+  text-decoration: underline;
+}
+
+/* Assuntos em etiquetas arredondadas */
+.detalhes-assuntos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.detalhes-assuntos li {
+  padding: 6px 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 999px;
+  background: var(--cor-cartao);
+  color: var(--cor-texto-suave);
+  font-size: 0.85em;
+}
+
+/* Enquanto carrega: capa piscando (animação vem da Fileira) */
+.detalhes-esqueleto {
+  width: 300px;
+  height: 450px;
+  border-radius: 12px;
+  background: var(--cor-esqueleto);
+  animation: piscar 1.2s ease-in-out infinite;
 }
