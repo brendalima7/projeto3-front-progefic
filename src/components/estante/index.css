@@ -12,6 +12,20 @@
   color: var(--cor-texto-suave);
 }
 
+.estante-avaliacao {
+  display: flex;
+  justify-content: center;
+  gap: 1px;
+  margin-top: -8px;
+  color: var(--cor-texto-suave);
+  font-size: 1.05em;
+  line-height: 1;
+}
+
+.estante-avaliacao .selecionada {
+  color: #eab308;
+}
+
 /* Livro sem capa: quadro do tamanho de uma capa com o título no meio */
 .estante-sem-capa {
   width: 180px;

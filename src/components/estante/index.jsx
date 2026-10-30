@@ -52,6 +52,27 @@ export default function Estante(props) {
                   <div className="estante-sem-capa">{livro.title}</div>
                 )}
                 <p>{livro.title}</p>
+                {props.mostrarAvaliacao && (
+                  <div
+                    className="estante-avaliacao"
+                    role="img"
+                    aria-label={
+                      livro.rating
+                        ? `Avaliação: ${livro.rating} de 5 estrelas`
+                        : "Sem avaliação"
+                    }
+                  >
+                    {Array.from({ length: 5 }, (_, indice) => (
+                      <span
+                        className={indice < (livro.rating || 0) ? "selecionada" : ""}
+                        key={indice}
+                        aria-hidden="true"
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>

@@ -39,6 +39,7 @@ export default function Detalhes(props) {
   const [salvandoFavorito, setSalvandoFavorito] = useState(false);
   const [erroFavorito, setErroFavorito] = useState("");
   const [erroStatus, setErroStatus] = useState("");
+  const [erroAvaliacao, setErroAvaliacao] = useState("");
   const [menuStatusAberto, setMenuStatusAberto] = useState(false);
   const [mostrarAnotacoes, setMostrarAnotacoes] = useState(false);
   const [anotacoes, setAnotacoes] = useState([]);
@@ -206,6 +207,32 @@ export default function Detalhes(props) {
     }
   };
 
+  const avaliarLivro = async (nota) => {
+    if (
+      !itemBiblioteca ||
+      itemBiblioteca.status !== "read" ||
+      carregandoFavorito ||
+      salvandoFavorito
+    ) {
+      return;
+    }
+
+    setSalvandoFavorito(true);
+    setErroAvaliacao("");
+    try {
+      const res = await axios.patch(
+        `${API_URL}/api/library/${itemBiblioteca.id}`,
+        { rating: nota },
+        { headers: { Authorization: `Bearer ${props.token}` } }
+      );
+      setItemBiblioteca(res.data);
+    } catch (error) {
+      setErroAvaliacao(error.response?.data?.erro || "Não foi possível salvar a avaliação");
+    } finally {
+      setSalvandoFavorito(false);
+    }
+  };
+
   const abrirEditorAnotacao = (anotacao = null) => {
     setAnotacaoEditando(anotacao);
     setTituloAnotacao(anotacao?.title || "");
@@ -302,6 +329,7 @@ export default function Detalhes(props) {
 
       {erroFavorito && <p className="erro detalhes-favorito-erro" role="status">{erroFavorito}</p>}
       {erroStatus && <p className="erro detalhes-status-erro" role="status">{erroStatus}</p>}
+      {erroAvaliacao && <p className="erro detalhes-avaliacao-erro" role="status">{erroAvaliacao}</p>}
 
       {carregando && (
         <div className="detalhes-conteudo">
@@ -323,6 +351,34 @@ export default function Detalhes(props) {
             )}
 
             <div className="detalhes-acoes-livro">
+              <div
+                className="detalhes-avaliacao"
+                role="group"
+                aria-label="Avaliação do livro"
+              >
+                {Array.from({ length: 5 }, (_, indice) => {
+                  const nota = indice + 1;
+                  const avaliavel = itemBiblioteca?.status === "read";
+                  return (
+                    <button
+                      className={`detalhes-estrela${nota <= (itemBiblioteca?.rating || 0) ? " selecionada" : ""}`}
+                      key={nota}
+                      type="button"
+                      onClick={() => avaliarLivro(nota)}
+                      disabled={!avaliavel || carregandoFavorito || salvandoFavorito}
+                      aria-label={`${nota} ${nota === 1 ? "estrela" : "estrelas"}`}
+                      aria-pressed={itemBiblioteca?.rating === nota}
+                      title={
+                        avaliavel
+                          ? `Avaliar com ${nota} ${nota === 1 ? "estrela" : "estrelas"}`
+                          : "Marque o livro como Lido para avaliar"
+                      }
+                    >
+                      ★
+                    </button>
+                  );
+                })}
+              </div>
               <div
                 className="detalhes-status-wrapper"
                 onBlur={(event) => {
