@@ -56,26 +56,85 @@
   gap: 12px;
 }
 
-.detalhes-lido {
-  min-width: 108px;
+.detalhes-status-wrapper {
+  position: relative;
+}
+
+.detalhes-status {
+  display: inline-flex;
+  min-width: 118px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   background: #e5e7eb;
   color: #374151;
 }
 
-.detalhes-lido:hover {
+.detalhes-status:hover {
   background: #d1d5db;
   color: #1f2937;
 }
 
-.detalhes-lido.ativo {
+.detalhes-status.ativo {
   border-color: #86efac;
   background: #dcfce7;
   color: #166534;
 }
 
-.detalhes-lido.ativo:hover {
+.detalhes-status.ativo:hover {
   background: #bbf7d0;
   color: #14532d;
+}
+
+.detalhes-status-seta {
+  margin-left: auto;
+  font-size: 0.75em;
+}
+
+.detalhes-status-opcoes {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + 6px);
+  left: 0;
+  display: grid;
+  min-width: 100%;
+  gap: 4px;
+  padding: 5px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  background: var(--cor-cartao);
+  box-shadow: var(--sombra);
+}
+
+.detalhes-status-opcao {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.detalhes-status-opcao:hover {
+  background: var(--cor-destaque-suave);
+}
+
+.detalhes-status-icone-lendo {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.detalhes-status-check {
+  width: 20px;
+  flex: 0 0 auto;
+  text-align: center;
+}
+
+.detalhes-status-opcao-selecionado {
+  margin-left: auto;
 }
 
 .detalhes-adicionar-wrapper {

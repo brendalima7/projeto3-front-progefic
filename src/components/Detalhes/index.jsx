@@ -8,6 +8,25 @@ import "./index.css";
 // Sinopses maiores que isso começam cortadas, com "Ler mais"
 const LIMITE_SINOPSE = 500;
 
+function IconeLendo() {
+  return (
+    <svg
+      className="detalhes-status-icone-lendo"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M9 10a4 4 0 1 1 6 0c-.7.8-1 1.4-1 2H10c0-.6-.3-1.2-1-2Z" />
+      <path d="M10 14h4M10.5 16h3M11 18h2" />
+      <path d="M2.5 14.5c3.4-.8 6.2-.3 9.5 2v5c-3.3-2.3-6.1-2.8-9.5-2v-5ZM21.5 14.5c-3.4-.8-6.2-.3-9.5 2v5c3.3-2.3 6.1-2.8 9.5-2v-5Z" />
+    </svg>
+  );
+}
+
 export default function Detalhes(props) {
   const [livro, setLivro] = useState(null);
   // Começa true porque a tela já abre buscando o livro
@@ -19,6 +38,7 @@ export default function Detalhes(props) {
   const [salvandoFavorito, setSalvandoFavorito] = useState(false);
   const [erroFavorito, setErroFavorito] = useState("");
   const [erroStatus, setErroStatus] = useState("");
+  const [menuStatusAberto, setMenuStatusAberto] = useState(false);
   // true = mostra a sinopse inteira
   const [sinopseAberta, setSinopseAberta] = useState(false);
 
@@ -201,17 +221,71 @@ export default function Detalhes(props) {
             )}
 
             <div className="detalhes-acoes-livro">
-              <button
-                className={`detalhes-lido${itemBiblioteca?.status === "read" ? " ativo" : ""}`}
-                type="button"
-                onClick={() => alterarStatus("read")}
-                disabled={carregandoFavorito || salvandoFavorito}
-                aria-pressed={itemBiblioteca?.status === "read"}
-                aria-busy={carregandoFavorito || salvandoFavorito}
+              <div
+                className="detalhes-status-wrapper"
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget)) {
+                    setMenuStatusAberto(false);
+                  }
+                }}
               >
-                {itemBiblioteca?.status === "read" && <span aria-hidden="true">✓ </span>}
-                Lido
-              </button>
+                <button
+                  className={`detalhes-status${itemBiblioteca?.status ? " ativo" : ""}`}
+                  type="button"
+                  onClick={() => setMenuStatusAberto((aberto) => !aberto)}
+                  disabled={carregandoFavorito || salvandoFavorito}
+                  aria-haspopup="true"
+                  aria-expanded={menuStatusAberto}
+                  aria-controls="detalhes-status-opcoes"
+                  aria-busy={carregandoFavorito || salvandoFavorito}
+                >
+                  {itemBiblioteca?.status === "read" ? (
+                    <>
+                      <span aria-hidden="true">✓</span> Lido
+                    </>
+                  ) : itemBiblioteca?.status === "reading" ? (
+                    <>
+                      <IconeLendo /> Lendo
+                    </>
+                  ) : (
+                    "Status"
+                  )}
+                  <span className="detalhes-status-seta" aria-hidden="true">▾</span>
+                </button>
+
+                {menuStatusAberto && (
+                  <div className="detalhes-status-opcoes" id="detalhes-status-opcoes">
+                    <button
+                      className="detalhes-status-opcao"
+                      type="button"
+                      onClick={() => {
+                        alterarStatus("reading", true);
+                        setMenuStatusAberto(false);
+                      }}
+                    >
+                      <IconeLendo />
+                      Lendo
+                      {itemBiblioteca?.status === "reading" && (
+                        <span className="detalhes-status-opcao-selecionado" aria-label="Selecionado">✓</span>
+                      )}
+                    </button>
+                    <button
+                      className="detalhes-status-opcao"
+                      type="button"
+                      onClick={() => {
+                        alterarStatus("read", true);
+                        setMenuStatusAberto(false);
+                      }}
+                    >
+                      <span className="detalhes-status-check" aria-hidden="true">✓</span>
+                      Lido
+                      {itemBiblioteca?.status === "read" && (
+                        <span className="detalhes-status-opcao-selecionado" aria-label="Selecionado">✓</span>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
 
               <div className="detalhes-adicionar-wrapper">
                 <button
