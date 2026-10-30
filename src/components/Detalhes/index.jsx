@@ -13,18 +13,101 @@ export default function Detalhes(props) {
   // Começa true porque a tela já abre buscando o livro
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
+  const [itemBiblioteca, setItemBiblioteca] = useState(null);
+  const [favorito, setFavorito] = useState(false);
+  const [carregandoFavorito, setCarregandoFavorito] = useState(true);
+  const [salvandoFavorito, setSalvandoFavorito] = useState(false);
+  const [erroFavorito, setErroFavorito] = useState("");
   // true = mostra a sinopse inteira
   const [sinopseAberta, setSinopseAberta] = useState(false);
 
   useEffect(() => {
+    let atual = true;
+    const comToken = { headers: { Authorization: `Bearer ${props.token}` } };
+
     axios
       .get(`${API_URL}/api/books/${props.id}`)
-      .then((res) => setLivro(res.data))
-      .catch((error) => {
-        setErro(error.response?.data?.erro || "Não foi possível carregar o livro");
+      .then((res) => {
+        if (atual) setLivro(res.data);
       })
-      .finally(() => setCarregando(false));
-  }, [props.id]);
+      .catch((error) => {
+        if (atual) setErro(error.response?.data?.erro || "Não foi possível carregar o livro");
+      })
+      .finally(() => {
+        if (atual) setCarregando(false);
+      });
+
+    axios
+      .get(`${API_URL}/api/library`, {
+        ...comToken,
+        params: { openlibrary_id: props.id },
+      })
+      .then((res) => {
+        if (!atual) return;
+        const item = res.data[0] || null;
+        setItemBiblioteca(item);
+        setFavorito(Boolean(item?.favorite));
+      })
+      .catch((error) => {
+        if (atual) {
+          setErroFavorito(
+            error.response?.data?.erro || "Não foi possível verificar se o livro está nos favoritos"
+          );
+        }
+      })
+      .finally(() => {
+        if (atual) setCarregandoFavorito(false);
+      });
+
+    return () => {
+      atual = false;
+    };
+  }, [props.id, props.token]);
+
+  const alternarFavorito = async () => {
+    if (!livro || carregandoFavorito || salvandoFavorito) return;
+
+    setSalvandoFavorito(true);
+    setErroFavorito("");
+    const comToken = { headers: { Authorization: `Bearer ${props.token}` } };
+
+    try {
+      if (itemBiblioteca) {
+        const res = await axios.patch(
+          `${API_URL}/api/library/${itemBiblioteca.id}`,
+          { favorite: !favorito },
+          comToken
+        );
+        setItemBiblioteca(res.data);
+        setFavorito(res.data.favorite);
+      } else {
+        const criado = await axios.post(
+          `${API_URL}/api/library`,
+          {
+            openlibrary_id: livro.id,
+            title: livro.title,
+            author: livro.authors?.join(", ") || null,
+            cover_id: livro.cover_id,
+            subjects: livro.subjects || [],
+          },
+          comToken
+        );
+        setItemBiblioteca(criado.data);
+
+        const atualizado = await axios.patch(
+          `${API_URL}/api/library/${criado.data.id}`,
+          { favorite: true },
+          comToken
+        );
+        setItemBiblioteca(atualizado.data);
+        setFavorito(atualizado.data.favorite);
+      }
+    } catch (error) {
+      setErroFavorito(error.response?.data?.erro || "Não foi possível atualizar os favoritos");
+    } finally {
+      setSalvandoFavorito(false);
+    }
+  };
 
   // "Autor · 1971": junta só o que existir
   const info = livro ? [livro.authors.join(", "), livro.year].filter(Boolean).join(" · ") : "";
@@ -37,6 +120,23 @@ export default function Detalhes(props) {
       <button className="detalhes-voltar" onClick={props.voltar}>
         ‹ Voltar
       </button>
+
+      {livro && (
+        <button
+          className={`detalhes-favorito${favorito ? " ativo" : ""}`}
+          type="button"
+          onClick={alternarFavorito}
+          disabled={carregandoFavorito || salvandoFavorito}
+          aria-label={favorito ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+          aria-pressed={favorito}
+          aria-busy={salvandoFavorito || carregandoFavorito}
+          title={favorito ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+        >
+          {favorito ? "★" : "☆"}
+        </button>
+      )}
+
+      {erroFavorito && <p className="erro detalhes-favorito-erro" role="status">{erroFavorito}</p>}
 
       {carregando && (
         <div className="detalhes-conteudo">
@@ -55,6 +155,7 @@ export default function Detalhes(props) {
               alt={livro.title}
             />
           )}
+
 
           <div className="detalhes-texto">
             {/* Os dois primeiros assuntos viram a etiqueta azul */}

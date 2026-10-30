@@ -1,8 +1,41 @@
 /* Mesma largura e margens da Explorar e do Perfil */
 .detalhes {
+  position: relative;
   max-width: 1400px;
   margin: 0 auto;
   padding: 16px 32px 48px;
+}
+
+.detalhes-favorito {
+  position: absolute;
+  top: 16px;
+  right: 32px;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  place-items: center;
+  color: var(--cor-texto-suave);
+  font-size: 1.8em;
+  line-height: 1;
+}
+
+.detalhes-favorito.ativo {
+  color: var(--cor-destaque-texto);
+}
+
+.detalhes-favorito:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.detalhes-favorito-erro {
+  position: absolute;
+  top: 68px;
+  right: 32px;
+  max-width: 260px;
+  margin: 0;
+  text-align: right;
 }
 
 /* "‹ Voltar": link discreto, sem cara de botão */
