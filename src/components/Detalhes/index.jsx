@@ -7,6 +7,7 @@ import "./index.css";
 
 // Sinopses maiores que isso começam cortadas, com "Ler mais"
 const LIMITE_SINOPSE = 500;
+const CORES_POSTIT = ["amarelo", "rosa", "azul", "verde"];
 
 function IconeLendo() {
   return (
@@ -39,6 +40,14 @@ export default function Detalhes(props) {
   const [erroFavorito, setErroFavorito] = useState("");
   const [erroStatus, setErroStatus] = useState("");
   const [menuStatusAberto, setMenuStatusAberto] = useState(false);
+  const [mostrarAnotacoes, setMostrarAnotacoes] = useState(false);
+  const [anotacoes, setAnotacoes] = useState([]);
+  const [carregandoAnotacoes, setCarregandoAnotacoes] = useState(false);
+  const [salvandoAnotacao, setSalvandoAnotacao] = useState(false);
+  const [erroAnotacoes, setErroAnotacoes] = useState("");
+  const [modalAnotacaoAberto, setModalAnotacaoAberto] = useState(false);
+  const [textoAnotacao, setTextoAnotacao] = useState("");
+  const [anotacaoEditando, setAnotacaoEditando] = useState(null);
   // true = mostra a sinopse inteira
   const [sinopseAberta, setSinopseAberta] = useState(false);
 
@@ -84,6 +93,31 @@ export default function Detalhes(props) {
       atual = false;
     };
   }, [props.id, props.token]);
+
+  useEffect(() => {
+    if (!mostrarAnotacoes) return undefined;
+
+    let atual = true;
+    axios
+      .get(`${API_URL}/api/books/${props.id}/notes`, {
+        headers: { Authorization: `Bearer ${props.token}` },
+      })
+      .then((res) => {
+        if (atual) setAnotacoes(res.data);
+      })
+      .catch((error) => {
+        if (atual) {
+          setErroAnotacoes(error.response?.data?.erro || "Não foi possível carregar as anotações");
+        }
+      })
+      .finally(() => {
+        if (atual) setCarregandoAnotacoes(false);
+      });
+
+    return () => {
+      atual = false;
+    };
+  }, [mostrarAnotacoes, props.id, props.token]);
 
   const alternarFavorito = async () => {
     if (!livro || carregandoFavorito || salvandoFavorito) return;
@@ -171,6 +205,72 @@ export default function Detalhes(props) {
     }
   };
 
+  const abrirEditorAnotacao = (anotacao = null) => {
+    setAnotacaoEditando(anotacao);
+    setTextoAnotacao(anotacao?.text || "");
+    setErroAnotacoes("");
+    setModalAnotacaoAberto(true);
+  };
+
+  const alternarAnotacoes = () => {
+    if (mostrarAnotacoes) {
+      setMostrarAnotacoes(false);
+      setCarregandoAnotacoes(false);
+      return;
+    }
+
+    setErroAnotacoes("");
+    setCarregandoAnotacoes(true);
+    setMostrarAnotacoes(true);
+  };
+
+  const salvarAnotacao = async (event) => {
+    event.preventDefault();
+    if (!textoAnotacao.trim() || salvandoAnotacao) return;
+
+    setSalvandoAnotacao(true);
+    setErroAnotacoes("");
+    const config = { headers: { Authorization: `Bearer ${props.token}` } };
+
+    try {
+      if (anotacaoEditando) {
+        const res = await axios.patch(
+          `${API_URL}/api/books/${props.id}/notes/${anotacaoEditando.id}`,
+          { text: textoAnotacao },
+          config
+        );
+        setAnotacoes((atuais) =>
+          atuais.map((anotacao) => (anotacao.id === res.data.id ? res.data : anotacao))
+        );
+      } else {
+        const cor = CORES_POSTIT[anotacoes.length % CORES_POSTIT.length];
+        const res = await axios.post(
+          `${API_URL}/api/books/${props.id}/notes`,
+          { text: textoAnotacao, color: cor },
+          config
+        );
+        setAnotacoes((atuais) => [...atuais, res.data]);
+      }
+      setModalAnotacaoAberto(false);
+    } catch (error) {
+      setErroAnotacoes(error.response?.data?.erro || "Não foi possível salvar a anotação");
+    } finally {
+      setSalvandoAnotacao(false);
+    }
+  };
+
+  const excluirAnotacao = async (anotacao) => {
+    setErroAnotacoes("");
+    try {
+      await axios.delete(`${API_URL}/api/books/${props.id}/notes/${anotacao.id}`, {
+        headers: { Authorization: `Bearer ${props.token}` },
+      });
+      setAnotacoes((atuais) => atuais.filter((item) => item.id !== anotacao.id));
+    } catch (error) {
+      setErroAnotacoes(error.response?.data?.erro || "Não foi possível excluir a anotação");
+    }
+  };
+
   // "Autor · 1971": junta só o que existir
   const info = livro ? [livro.authors.join(", "), livro.year].filter(Boolean).join(" · ") : "";
 
@@ -210,7 +310,7 @@ export default function Detalhes(props) {
       {erro && <p className="erro">{erro}</p>}
 
       {livro && (
-        <div className="detalhes-conteudo">
+        <div className={`detalhes-conteudo${mostrarAnotacoes ? " com-anotacoes" : ""}`}>
           <div className="detalhes-capa-coluna">
             {livro.cover_id && (
               <img
@@ -311,6 +411,28 @@ export default function Detalhes(props) {
                     : "Adicionar à minha lista"}
                 </span>
               </div>
+
+              <button
+                className={`detalhes-adicionar${mostrarAnotacoes ? " ativo" : ""}`}
+                type="button"
+                onClick={alternarAnotacoes}
+                aria-label={mostrarAnotacoes ? "Fechar anotações" : "Abrir anotações"}
+                aria-pressed={mostrarAnotacoes}
+                title={mostrarAnotacoes ? "Fechar anotações" : "Abrir anotações"}
+              >
+                <svg
+                  className="detalhes-icone-lapis"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m15 5 4 4M4 20l4.5-1 11-11a2.1 2.1 0 0 0-4-4l-11 11L4 20Z" />
+                </svg>
+              </button>
             </div>
           </div>
 
@@ -347,6 +469,110 @@ export default function Detalhes(props) {
               </section>
             )}
           </div>
+
+          {mostrarAnotacoes && (
+            <aside className="detalhes-anotacoes" aria-label="Anotações do livro">
+              <header className="detalhes-anotacoes-cabecalho">
+                <h3>Anotações</h3>
+                <div>
+                  <button
+                    className="detalhes-anotacoes-acao"
+                    type="button"
+                    onClick={() => abrirEditorAnotacao()}
+                    disabled={carregandoAnotacoes}
+                    aria-label="Adicionar anotação"
+                    title="Adicionar anotação"
+                  >
+                    +
+                  </button>
+                  <button
+                    className="detalhes-anotacoes-acao"
+                    type="button"
+                    onClick={alternarAnotacoes}
+                    aria-label="Fechar anotações"
+                    title="Fechar anotações"
+                  >
+                    ×
+                  </button>
+                </div>
+              </header>
+
+              {erroAnotacoes && !modalAnotacaoAberto && (
+                <p className="erro" role="status">{erroAnotacoes}</p>
+              )}
+              {carregandoAnotacoes && <p className="detalhes-anotacoes-vazio">Carregando anotações...</p>}
+              {!carregandoAnotacoes && !anotacoes.length && (
+                <p className="detalhes-anotacoes-vazio">Nenhuma anotação ainda.</p>
+              )}
+              <div className="detalhes-anotacoes-lista">
+                {anotacoes.map((anotacao) => (
+                  <article
+                    className={`detalhes-postit detalhes-postit-${anotacao.color}`}
+                    key={anotacao.id}
+                  >
+                    <p>{anotacao.text}</p>
+                    <footer>
+                      <button type="button" onClick={() => abrirEditorAnotacao(anotacao)}>
+                        Editar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => excluirAnotacao(anotacao)}
+                        aria-label="Excluir anotação"
+                      >
+                        Excluir
+                      </button>
+                    </footer>
+                  </article>
+                ))}
+              </div>
+            </aside>
+          )}
+        </div>
+      )}
+
+      {modalAnotacaoAberto && (
+        <div
+          className="detalhes-modal-fundo"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !salvandoAnotacao) {
+              setModalAnotacaoAberto(false);
+            }
+          }}
+        >
+          <form
+            className="detalhes-modal-anotacao"
+            onSubmit={salvarAnotacao}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="titulo-modal-anotacao"
+          >
+            <h2 id="titulo-modal-anotacao">
+              {anotacaoEditando ? "Editar anotação" : "Nova anotação"}
+            </h2>
+            <label htmlFor="texto-anotacao">Sua anotação</label>
+            <textarea
+              id="texto-anotacao"
+              value={textoAnotacao}
+              onChange={(event) => setTextoAnotacao(event.target.value)}
+              maxLength={2000}
+              rows={7}
+              autoFocus
+            />
+            {erroAnotacoes && <p className="erro" role="status">{erroAnotacoes}</p>}
+            <div className="detalhes-modal-acoes">
+              <button
+                type="button"
+                onClick={() => setModalAnotacaoAberto(false)}
+                disabled={salvandoAnotacao}
+              >
+                Cancelar
+              </button>
+              <button type="submit" disabled={!textoAnotacao.trim() || salvandoAnotacao}>
+                {salvandoAnotacao ? "Salvando..." : "Salvar"}
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </div>
