@@ -52,8 +52,41 @@
 
 .detalhes-acoes-livro {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
+}
+
+.detalhes-avaliacao {
+  display: flex;
+  width: 100%;
+  gap: 3px;
+}
+
+.detalhes-estrela {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--cor-texto-suave);
+  font-size: 1.65em;
+  line-height: 1;
+}
+
+.detalhes-estrela.selecionada {
+  color: #eab308;
+}
+
+.detalhes-estrela:not(:disabled):hover,
+.detalhes-estrela:not(:disabled):focus-visible {
+  color: #f59e0b;
+}
+
+.detalhes-estrela:disabled {
+  cursor: default;
+}
+
+.detalhes-avaliacao-erro {
+  margin: 8px 0 0;
 }
 
 .detalhes-status-wrapper {

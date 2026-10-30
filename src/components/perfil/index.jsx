@@ -235,6 +235,7 @@ export default function Perfil(props) {
             titulo="Lidos"
             livros={livros.filter((l) => l.status === "read")}
             abrirLivro={props.abrirLivro}
+            mostrarAvaliacao
           />
           <Estante
             titulo="Favoritos"
