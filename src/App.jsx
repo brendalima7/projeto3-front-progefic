@@ -124,7 +124,14 @@ function App() {
       />
 
       {/* Livro aberto aparece por cima de tudo; "Voltar" volta pra tela de antes */}
-      {livroAberto && <Detalhes id={livroAberto} voltar={() => setLivroAberto('')} />}
+      {livroAberto && (
+        <Detalhes
+          key={livroAberto}
+          id={livroAberto}
+          token={token}
+          voltar={() => setLivroAberto('')}
+        />
+      )}
 
       {!livroAberto && mostrarPerfil && <Perfil token={token} abrirLivro={abrirLivro} />}
 

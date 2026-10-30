@@ -6,8 +6,9 @@ Link do deploy: http://18.232.173.36/
 ## Funcionalidades
 
 - **Explorar:** assuntos fixos (ex.: fantasia, mistério) e busca por título, autor ou assunto.
-- **Detalhes:** informações do livro e opção de adicioná-lo à biblioteca.
+- **Detalhes:** informações do livro, status de leitura, favoritos e anotações em post-its que podem ser criados, editados e excluídos.
 - **Minha biblioteca:** livros em "Quero ler", "Lendo" e "Lido", com nota e anotação privada.
+- **Favoritos:** livros favoritos reunidos em uma estante no perfil.
 - **Login:** cada usuário tem a própria biblioteca.
 
 ## Regras
