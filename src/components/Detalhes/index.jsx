@@ -18,6 +18,7 @@ export default function Detalhes(props) {
   const [carregandoFavorito, setCarregandoFavorito] = useState(true);
   const [salvandoFavorito, setSalvandoFavorito] = useState(false);
   const [erroFavorito, setErroFavorito] = useState("");
+  const [erroStatus, setErroStatus] = useState("");
   // true = mostra a sinopse inteira
   const [sinopseAberta, setSinopseAberta] = useState(false);
 
@@ -109,6 +110,47 @@ export default function Detalhes(props) {
     }
   };
 
+  const alterarStatus = async (status, removerSeAtivo = false) => {
+    if (!livro || carregandoFavorito || salvandoFavorito) return;
+
+    const novoStatus =
+      removerSeAtivo && itemBiblioteca?.status === status ? null : status;
+    if (itemBiblioteca?.status === novoStatus) return;
+
+    setSalvandoFavorito(true);
+    setErroStatus("");
+    const comToken = { headers: { Authorization: `Bearer ${props.token}` } };
+
+    try {
+      if (itemBiblioteca) {
+        const res = await axios.patch(
+          `${API_URL}/api/library/${itemBiblioteca.id}`,
+          { status: novoStatus },
+          comToken
+        );
+        setItemBiblioteca(res.data);
+      } else {
+        const res = await axios.post(
+          `${API_URL}/api/library`,
+          {
+            openlibrary_id: livro.id,
+            title: livro.title,
+            author: livro.authors?.join(", ") || null,
+            cover_id: livro.cover_id,
+            subjects: livro.subjects || [],
+            status: novoStatus,
+          },
+          comToken
+        );
+        setItemBiblioteca(res.data);
+      }
+    } catch (error) {
+      setErroStatus(error.response?.data?.erro || "Não foi possível atualizar o status do livro");
+    } finally {
+      setSalvandoFavorito(false);
+    }
+  };
+
   // "Autor · 1971": junta só o que existir
   const info = livro ? [livro.authors.join(", "), livro.year].filter(Boolean).join(" · ") : "";
 
@@ -137,6 +179,7 @@ export default function Detalhes(props) {
       )}
 
       {erroFavorito && <p className="erro detalhes-favorito-erro" role="status">{erroFavorito}</p>}
+      {erroStatus && <p className="erro detalhes-status-erro" role="status">{erroStatus}</p>}
 
       {carregando && (
         <div className="detalhes-conteudo">
@@ -148,14 +191,52 @@ export default function Detalhes(props) {
 
       {livro && (
         <div className="detalhes-conteudo">
-          {livro.cover_id && (
-            <img
-              className="detalhes-capa"
-              src={`https://covers.openlibrary.org/b/id/${livro.cover_id}-L.jpg`}
-              alt={livro.title}
-            />
-          )}
+          <div className="detalhes-capa-coluna">
+            {livro.cover_id && (
+              <img
+                className="detalhes-capa"
+                src={`https://covers.openlibrary.org/b/id/${livro.cover_id}-L.jpg`}
+                alt={livro.title}
+              />
+            )}
 
+            <div className="detalhes-acoes-livro">
+              <button
+                className={`detalhes-lido${itemBiblioteca?.status === "read" ? " ativo" : ""}`}
+                type="button"
+                onClick={() => alterarStatus("read")}
+                disabled={carregandoFavorito || salvandoFavorito}
+                aria-pressed={itemBiblioteca?.status === "read"}
+                aria-busy={carregandoFavorito || salvandoFavorito}
+              >
+                {itemBiblioteca?.status === "read" && <span aria-hidden="true">✓ </span>}
+                Lido
+              </button>
+
+              <div className="detalhes-adicionar-wrapper">
+                <button
+                  className={`detalhes-adicionar${itemBiblioteca?.status === "want_to_read" ? " ativo" : ""}`}
+                  type="button"
+                  onClick={() => alterarStatus("want_to_read", true)}
+                  disabled={carregandoFavorito || salvandoFavorito}
+                  aria-label={
+                    itemBiblioteca?.status === "want_to_read"
+                      ? "Remover da minha lista"
+                      : "Adicionar à minha lista"
+                  }
+                  aria-pressed={itemBiblioteca?.status === "want_to_read"}
+                  aria-busy={carregandoFavorito || salvandoFavorito}
+                >
+                  {itemBiblioteca?.status === "want_to_read" ? "✓" : "+"}
+                </button>
+                <span className="detalhes-adicionar-tooltip">
+                  {itemBiblioteca?.status === "want_to_read"
+                    ? "Remover da minha lista"
+                    : "Adicionar à minha lista"}
+                </span>
+              </div>
+            </div>
+          </div>
 
           <div className="detalhes-texto">
             {/* Os dois primeiros assuntos viram a etiqueta azul */}

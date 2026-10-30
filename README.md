@@ -5,7 +5,7 @@ Frontend do **BookSpace**, app para descobrir livros e organizar leituras. Proje
 ## Funcionalidades
 
 - **Explorar:** assuntos fixos (ex.: fantasia, mistério) e busca por título, autor ou assunto.
-- **Detalhes:** informações do livro e opção de adicioná-lo à biblioteca ou aos favoritos.
+- **Detalhes:** informações do livro e opções para marcar como lido, adicionar ou remover da lista e favoritar.
 - **Minha biblioteca:** livros em "Quero ler", "Lendo" e "Lido", com nota e anotação privada.
 - **Favoritos:** livros favoritos reunidos em uma estante no perfil.
 - **Login:** cada usuário tem a própria biblioteca.
