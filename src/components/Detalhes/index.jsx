@@ -256,8 +256,9 @@ export default function Detalhes(props) {
                 {menuStatusAberto && (
                   <div className="detalhes-status-opcoes" id="detalhes-status-opcoes">
                     <button
-                      className="detalhes-status-opcao lendo"
+                      className={`detalhes-status-opcao${itemBiblioteca?.status === "reading" ? " lendo selecionado" : ""}`}
                       type="button"
+                      aria-pressed={itemBiblioteca?.status === "reading"}
                       onClick={() => {
                         alterarStatus("reading", true);
                         setMenuStatusAberto(false);
@@ -266,12 +267,13 @@ export default function Detalhes(props) {
                       <IconeLendo />
                       Lendo
                       {itemBiblioteca?.status === "reading" && (
-                        <span className="detalhes-status-opcao-selecionado" aria-label="Selecionado">✓</span>
+                        <span className="detalhes-status-opcao-selecionado" aria-label="Selecionado"></span>
                       )}
                     </button>
                     <button
-                      className="detalhes-status-opcao"
+                      className={`detalhes-status-opcao${itemBiblioteca?.status === "read" ? " lido selecionado" : ""}`}
                       type="button"
+                      aria-pressed={itemBiblioteca?.status === "read"}
                       onClick={() => {
                         alterarStatus("read", true);
                         setMenuStatusAberto(false);
