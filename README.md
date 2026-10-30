@@ -1,6 +1,7 @@
 # projeto3-front-progefic
 
 Frontend do **BookSpace**, app para descobrir livros e organizar leituras. Projeto 3 de Programação Eficaz.
+Link do deploy: http://18.232.173.36/
 
 ## Funcionalidades
 
