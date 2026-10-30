@@ -46,6 +46,7 @@ export default function Detalhes(props) {
   const [salvandoAnotacao, setSalvandoAnotacao] = useState(false);
   const [erroAnotacoes, setErroAnotacoes] = useState("");
   const [modalAnotacaoAberto, setModalAnotacaoAberto] = useState(false);
+  const [tituloAnotacao, setTituloAnotacao] = useState("");
   const [textoAnotacao, setTextoAnotacao] = useState("");
   const [anotacaoEditando, setAnotacaoEditando] = useState(null);
   // true = mostra a sinopse inteira
@@ -207,6 +208,7 @@ export default function Detalhes(props) {
 
   const abrirEditorAnotacao = (anotacao = null) => {
     setAnotacaoEditando(anotacao);
+    setTituloAnotacao(anotacao?.title || "");
     setTextoAnotacao(anotacao?.text || "");
     setErroAnotacoes("");
     setModalAnotacaoAberto(true);
@@ -226,7 +228,7 @@ export default function Detalhes(props) {
 
   const salvarAnotacao = async (event) => {
     event.preventDefault();
-    if (!textoAnotacao.trim() || salvandoAnotacao) return;
+    if (!tituloAnotacao.trim() || !textoAnotacao.trim() || salvandoAnotacao) return;
 
     setSalvandoAnotacao(true);
     setErroAnotacoes("");
@@ -236,7 +238,7 @@ export default function Detalhes(props) {
       if (anotacaoEditando) {
         const res = await axios.patch(
           `${API_URL}/api/books/${props.id}/notes/${anotacaoEditando.id}`,
-          { text: textoAnotacao },
+          { title: tituloAnotacao, text: textoAnotacao },
           config
         );
         setAnotacoes((atuais) =>
@@ -246,7 +248,7 @@ export default function Detalhes(props) {
         const cor = CORES_POSTIT[anotacoes.length % CORES_POSTIT.length];
         const res = await axios.post(
           `${API_URL}/api/books/${props.id}/notes`,
-          { text: textoAnotacao, color: cor },
+          { title: tituloAnotacao, text: textoAnotacao, color: cor },
           config
         );
         setAnotacoes((atuais) => [...atuais, res.data]);
@@ -330,7 +332,7 @@ export default function Detalhes(props) {
                 }}
               >
                 <button
-                  className={`detalhes-status${itemBiblioteca?.status ? " ativo" : ""}${itemBiblioteca?.status === "reading" ? " lendo" : ""}`}
+                  className={`detalhes-status${["read", "reading"].includes(itemBiblioteca?.status) ? " ativo" : ""}${itemBiblioteca?.status === "reading" ? " lendo" : ""}`}
                   type="button"
                   onClick={() => setMenuStatusAberto((aberto) => !aberto)}
                   disabled={carregandoFavorito || salvandoFavorito}
@@ -510,6 +512,7 @@ export default function Detalhes(props) {
                     className={`detalhes-postit detalhes-postit-${anotacao.color}`}
                     key={anotacao.id}
                   >
+                    <h4>{anotacao.title || "Sem título"}</h4>
                     <p>{anotacao.text}</p>
                     <footer>
                       <button type="button" onClick={() => abrirEditorAnotacao(anotacao)}>
@@ -550,6 +553,15 @@ export default function Detalhes(props) {
             <h2 id="titulo-modal-anotacao">
               {anotacaoEditando ? "Editar anotação" : "Nova anotação"}
             </h2>
+            <label htmlFor="titulo-anotacao">Título</label>
+            <input
+              id="titulo-anotacao"
+              type="text"
+              value={tituloAnotacao}
+              onChange={(event) => setTituloAnotacao(event.target.value)}
+              maxLength={120}
+              autoFocus
+            />
             <label htmlFor="texto-anotacao">Sua anotação</label>
             <textarea
               id="texto-anotacao"
@@ -557,7 +569,6 @@ export default function Detalhes(props) {
               onChange={(event) => setTextoAnotacao(event.target.value)}
               maxLength={2000}
               rows={7}
-              autoFocus
             />
             {erroAnotacoes && <p className="erro" role="status">{erroAnotacoes}</p>}
             <div className="detalhes-modal-acoes">
@@ -568,7 +579,10 @@ export default function Detalhes(props) {
               >
                 Cancelar
               </button>
-              <button type="submit" disabled={!textoAnotacao.trim() || salvandoAnotacao}>
+              <button
+                type="submit"
+                disabled={!tituloAnotacao.trim() || !textoAnotacao.trim() || salvandoAnotacao}
+              >
                 {salvandoAnotacao ? "Salvando..." : "Salvar"}
               </button>
             </div>

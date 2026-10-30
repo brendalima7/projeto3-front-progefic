@@ -342,6 +342,14 @@
   white-space: pre-wrap;
 }
 
+.detalhes-postit h4 {
+  margin: 0 0 8px;
+  color: #1e293b;
+  font-size: 0.95em;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
 .detalhes-postit-amarelo {
   border-color: #facc15;
   background: #fef3c7;
@@ -424,6 +432,15 @@
   font: inherit;
 }
 
+.detalhes-modal-anotacao input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
 .detalhes-modal-acoes {
   display: flex;
   justify-content: flex-end;
@@ -442,6 +459,7 @@
   opacity: 0.65;
 }
 
+[data-tema="escuro"] .detalhes-postit h4,
 [data-tema="escuro"] .detalhes-postit p,
 [data-tema="escuro"] .detalhes-postit footer button {
   color: #1e293b;
