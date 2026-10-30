@@ -230,7 +230,7 @@ export default function Detalhes(props) {
                 }}
               >
                 <button
-                  className={`detalhes-status${itemBiblioteca?.status ? " ativo" : ""}`}
+                  className={`detalhes-status${itemBiblioteca?.status ? " ativo" : ""}${itemBiblioteca?.status === "reading" ? " lendo" : ""}`}
                   type="button"
                   onClick={() => setMenuStatusAberto((aberto) => !aberto)}
                   disabled={carregandoFavorito || salvandoFavorito}
@@ -256,7 +256,7 @@ export default function Detalhes(props) {
                 {menuStatusAberto && (
                   <div className="detalhes-status-opcoes" id="detalhes-status-opcoes">
                     <button
-                      className="detalhes-status-opcao"
+                      className="detalhes-status-opcao lendo"
                       type="button"
                       onClick={() => {
                         alterarStatus("reading", true);
@@ -280,7 +280,7 @@ export default function Detalhes(props) {
                       <span className="detalhes-status-check" aria-hidden="true">✓</span>
                       Lido
                       {itemBiblioteca?.status === "read" && (
-                        <span className="detalhes-status-opcao-selecionado" aria-label="Selecionado">✓</span>
+                        <span className="detalhes-status-opcao-selecionado" aria-label="Selecionado"></span>
                       )}
                     </button>
                   </div>

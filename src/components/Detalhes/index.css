@@ -86,6 +86,17 @@
   color: #14532d;
 }
 
+.detalhes-status.lendo {
+  border-color: #fbbf24;
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.detalhes-status.lendo:hover {
+  background: #fde68a;
+  color: #78350f;
+}
+
 .detalhes-status-seta {
   margin-left: auto;
   font-size: 0.75em;
@@ -119,6 +130,37 @@
 
 .detalhes-status-opcao:hover {
   background: var(--cor-destaque-suave);
+}
+
+.detalhes-status-opcao.lendo {
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.detalhes-status-opcao.lendo:hover {
+  background: #fef3c7;
+  color: #78350f;
+}
+
+[data-tema="escuro"] .detalhes-status.lendo {
+  border-color: #a16207;
+  background: #422006;
+  color: #fcd34d;
+}
+
+[data-tema="escuro"] .detalhes-status.lendo:hover {
+  background: #713f12;
+  color: #fde68a;
+}
+
+[data-tema="escuro"] .detalhes-status-opcao.lendo {
+  background: #292014;
+  color: #fcd34d;
+}
+
+[data-tema="escuro"] .detalhes-status-opcao.lendo:hover {
+  background: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
 }
 
 .detalhes-status-icone-lendo {
