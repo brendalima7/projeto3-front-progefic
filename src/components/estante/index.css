@@ -16,7 +16,7 @@
   display: flex;
   justify-content: center;
   gap: 1px;
-  margin-top: -8px;
+  margin-top: 6px;
   color: var(--cor-texto-suave);
   font-size: 1.05em;
   line-height: 1;

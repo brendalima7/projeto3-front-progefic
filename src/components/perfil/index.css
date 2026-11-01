@@ -99,3 +99,66 @@
 .perfil-aviso {
   color: var(--cor-destaque);
 }
+
+/* Foto redonda acima da caixa, com as ações ao lado */
+.perfil-foto-area {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.perfil-foto {
+  flex: 0 0 96px;
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border: 1px solid var(--cor-borda);
+  border-radius: 50%;
+}
+
+/* Sem foto: a inicial do nome no lugar da imagem */
+.perfil-foto-vazia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cor-cartao);
+  color: var(--cor-texto-suave);
+  font-size: 2.2em;
+  font-weight: 600;
+}
+
+/* Post-its lado a lado, quebrando linha conforme a largura da tela */
+.perfil-anotacoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  padding: 10px 4px;
+}
+
+.perfil-anotacao {
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.perfil-anotacao:hover {
+  box-shadow: var(--sombra-forte);
+}
+
+/* Anotações longas ficam cortadas; o texto inteiro está nos Detalhes do livro */
+.perfil-anotacao p {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Nome do livro em cima do post-it; a cor é fixa porque o post-it é claro nos dois temas */
+.perfil-anotacao-livro {
+  display: block;
+  margin-bottom: 6px;
+  color: #475569;
+  font-size: 0.8em;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}

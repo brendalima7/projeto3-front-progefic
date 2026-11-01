@@ -1,17 +1,59 @@
-// Tela de perfil: nome, e-mail e senha em linhas (com opção de editar o nome e mudar a senha)
-// e, embaixo, os livros da biblioteca separados em estantes
+// Tela de perfil: foto, nome, e-mail e senha em linhas (com opção de editar o nome e mudar a senha)
+// e, embaixo, os livros da biblioteca separados em estantes e as anotações
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../api";
 import Estante from "../estante";
+// Reaproveita o visual dos post-its dos Detalhes
+import "../Detalhes/index.css";
 import "./index.css";
+
+// A foto é guardada quadrada, nesse tamanho, pra caber no banco
+const TAMANHO_FOTO = 256;
+
+// Recorta o centro da imagem, reduz e devolve como data URL
+const reduzirFoto = async (arquivo) => {
+  const imagem = await createImageBitmap(arquivo);
+  const lado = Math.min(imagem.width, imagem.height);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = TAMANHO_FOTO;
+  canvas.height = TAMANHO_FOTO;
+
+  const contexto = canvas.getContext("2d");
+  // JPEG não tem transparência: sem isso, o fundo de um PNG ficaria preto
+  contexto.fillStyle = "white";
+  contexto.fillRect(0, 0, TAMANHO_FOTO, TAMANHO_FOTO);
+  contexto.drawImage(
+    imagem,
+    (imagem.width - lado) / 2,
+    (imagem.height - lado) / 2,
+    lado,
+    lado,
+    0,
+    0,
+    TAMANHO_FOTO,
+    TAMANHO_FOTO
+  );
+  imagem.close();
+
+  return canvas.toDataURL("image/jpeg", 0.85);
+};
 
 export default function Perfil(props) {
   const [usuario, setUsuario] = useState(null);
   // Todos os livros salvos na biblioteca; as estantes filtram daqui
   const [livros, setLivros] = useState([]);
   const [erro, setErro] = useState("");
+  // Anotações de todos os livros; null = ainda carregando
+  const [anotacoes, setAnotacoes] = useState(null);
+  const [erroAnotacoes, setErroAnotacoes] = useState("");
+
+  // Foto: o botão "Trocar foto" abre o seletor de arquivo, que fica escondido
+  const seletorFoto = useRef(null);
+  const [salvandoFoto, setSalvandoFoto] = useState(false);
+  const [mensagemFoto, setMensagemFoto] = useState({ texto: "", erro: false });
 
   // Editar nome: a linha só vira campo depois de clicar em "Editar"
   const [editandoNome, setEditandoNome] = useState(false);
@@ -57,6 +99,58 @@ export default function Perfil(props) {
       atual = false;
     };
   }, [props.token]);
+
+  // Separado do resto: os títulos podem depender da Open Library, que às vezes demora
+  useEffect(() => {
+    let atual = true;
+
+    axios
+      .get(`${API_URL}/api/books/notes`, {
+        headers: { Authorization: `Bearer ${props.token}` },
+      })
+      .then((res) => {
+        if (atual) setAnotacoes(res.data);
+      })
+      .catch((error) => {
+        if (atual) setErroAnotacoes(motivo(error, "Não foi possível carregar as anotações"));
+      });
+
+    return () => {
+      atual = false;
+    };
+  }, [props.token]);
+
+  // Envia a foto nova, ou null pra remover
+  const salvarFoto = async (foto) => {
+    setSalvandoFoto(true);
+    setMensagemFoto({ texto: "", erro: false });
+
+    try {
+      const res = await axios.patch(`${API_URL}/api/auth/me`, { photo: foto }, cabecalho);
+      setUsuario(res.data);
+    } catch (error) {
+      setMensagemFoto({ texto: motivo(error, "Não foi possível salvar a foto"), erro: true });
+    } finally {
+      setSalvandoFoto(false);
+    }
+  };
+
+  const escolherFoto = async (event) => {
+    const arquivo = event.target.files[0];
+    // Limpa o seletor, pra escolher o mesmo arquivo de novo funcionar
+    event.target.value = "";
+    if (!arquivo) return;
+
+    let foto;
+    try {
+      foto = await reduzirFoto(arquivo);
+    } catch {
+      // Ex.: arquivo que não é imagem, ou formato que o navegador não abre
+      setMensagemFoto({ texto: "Não foi possível abrir essa imagem", erro: true });
+      return;
+    }
+    salvarFoto(foto);
+  };
 
   const abrirNome = () => {
     setNome(usuario.name);
@@ -125,6 +219,44 @@ export default function Perfil(props) {
       {erro && <p className="erro">{erro}</p>}
 
       {!usuario && !erro && <p>Carregando...</p>}
+
+      {usuario && (
+        <div className="perfil-foto-area">
+          {usuario.photo ? (
+            <img className="perfil-foto" src={usuario.photo} alt={`Foto de ${usuario.name}`} />
+          ) : (
+            // Sem foto: mostra a inicial do nome
+            <div className="perfil-foto perfil-foto-vazia" aria-hidden="true">
+              {usuario.name[0].toUpperCase()}
+            </div>
+          )}
+
+          <div>
+            <input
+              ref={seletorFoto}
+              type="file"
+              accept="image/*"
+              onChange={escolherFoto}
+              aria-label="Escolher foto de perfil"
+              hidden
+            />
+            <button
+              className="perfil-acao"
+              onClick={() => seletorFoto.current.click()}
+              disabled={salvandoFoto}
+            >
+              {salvandoFoto ? "Salvando..." : usuario.photo ? "Trocar foto" : "Adicionar foto"}
+            </button>
+            {usuario.photo && (
+              <button className="perfil-acao" onClick={() => salvarFoto(null)} disabled={salvandoFoto}>
+                Remover
+              </button>
+            )}
+
+            {mensagemFoto.texto && <p className="erro">{mensagemFoto.texto}</p>}
+          </div>
+        </div>
+      )}
 
       {usuario && (
         <div className="perfil-caixa">
@@ -242,6 +374,36 @@ export default function Perfil(props) {
             livros={livros.filter((l) => l.favorite)}
             abrirLivro={props.abrirLivro}
           />
+
+          {/* Mesmo cabeçalho das estantes; clicar num post-it abre o livro dele */}
+          <section className="fileira">
+            <h3>
+              Anotações{" "}
+              {anotacoes && <span className="estante-quantidade">{anotacoes.length}</span>}
+            </h3>
+
+            {erroAnotacoes && <p className="erro">{erroAnotacoes}</p>}
+            {!anotacoes && !erroAnotacoes && <p className="estante-vazia">Carregando...</p>}
+            {anotacoes?.length === 0 && <p className="estante-vazia">Nenhuma anotação ainda</p>}
+
+            {anotacoes?.length > 0 && (
+              <div className="perfil-anotacoes">
+                {anotacoes.map((anotacao) => (
+                  <article
+                    key={anotacao.id}
+                    className={`detalhes-postit detalhes-postit-${anotacao.color} perfil-anotacao`}
+                    onClick={() => props.abrirLivro(anotacao.openlibrary_id)}
+                  >
+                    {anotacao.book_title && (
+                      <span className="perfil-anotacao-livro">{anotacao.book_title}</span>
+                    )}
+                    <h4>{anotacao.title || "Sem título"}</h4>
+                    <p>{anotacao.text}</p>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
         </>
       )}
     </div>

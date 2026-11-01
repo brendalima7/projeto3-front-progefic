@@ -4,6 +4,7 @@ import { API_URL } from "../../api";
 import { GENEROS } from "../../generos";
 import Fileira from "../fileira";
 import Destaque from "../destaque";
+import Estante from "../estante";
 import "./index.css";
 
 // Embaralha a lista e pega os primeiros n (sem repetir)
@@ -14,6 +15,32 @@ export default function Explorar(props) {
   const [sorteados] = useState(() => sortear(GENEROS, 3));
   // Resultado da busca e o termo a que ele pertence
   const [resultado, setResultado] = useState({ termo: "", livros: [], erro: "" });
+  // Livros que a pessoa logada está lendo, pra fileira "Continue lendo"
+  const [lendo, setLendo] = useState([]);
+
+  // Busca os livros em leitura ao abrir o início
+  useEffect(() => {
+    if (!props.token || props.secao !== "") {
+      return;
+    }
+
+    let atual = true;
+
+    axios
+      .get(`${API_URL}/api/library`, {
+        headers: { Authorization: `Bearer ${props.token}` },
+        params: { status: "reading" },
+      })
+      .then((res) => {
+        if (atual) setLendo(res.data);
+      })
+      // Se falhar, o início continua, só sem a fileira
+      .catch(() => {});
+
+    return () => {
+      atual = false;
+    };
+  }, [props.token, props.secao]);
 
   // Busca os resultados quando chega um termo novo da lupa do topo
   useEffect(() => {
@@ -52,6 +79,11 @@ export default function Explorar(props) {
       {props.secao === "" && (
         <>
           <Destaque abrirLivro={props.abrirLivro} />
+
+          {/* Só aparece pra quem está logado e tem livro em leitura */}
+          {props.token && lendo.length > 0 && (
+            <Estante titulo="Continue lendo" livros={lendo} abrirLivro={props.abrirLivro} />
+          )}
 
           {/* O primeiro gênero sorteado vira "Descubra", com uma página aleatória */}
           <Fileira

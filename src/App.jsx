@@ -136,7 +136,7 @@ function App() {
       {!livroAberto && mostrarPerfil && <Perfil token={token} abrirLivro={abrirLivro} />}
 
       {!livroAberto && !mostrarPerfil && (
-        <Explorar secao={secao} termoBusca={termoBusca} abrirLivro={abrirLivro} />
+        <Explorar secao={secao} termoBusca={termoBusca} abrirLivro={abrirLivro} token={token} />
       )}
     </>
   )

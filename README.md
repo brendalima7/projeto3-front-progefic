@@ -9,6 +9,8 @@ Link do deploy: http://18.232.173.36/
 - **Detalhes:** informações do livro, status de leitura, favoritos e anotações em post-its que podem ser criados, editados e excluídos.
 - **Minha biblioteca:** livros em "Quero ler", "Lendo" e "Lido", com nota e anotação privada.
 - **Favoritos:** livros favoritos reunidos em uma estante no perfil.
+- **Perfil:** foto, dados da conta, estantes e todas as anotações em um só lugar.
+- **Continue lendo:** os livros em leitura aparecem na tela inicial.
 - **Login:** cada usuário tem a própria biblioteca.
 
 ## Regras
