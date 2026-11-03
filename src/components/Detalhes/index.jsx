@@ -208,17 +208,15 @@ export default function Detalhes(props) {
   };
 
   const avaliarLivro = async (nota) => {
-    if (
-      !itemBiblioteca ||
-      itemBiblioteca.status !== "read" ||
-      carregandoFavorito ||
-      salvandoFavorito
-    ) {
+    if (carregandoFavorito || salvandoFavorito) return;
+
+    if (!itemBiblioteca || itemBiblioteca.status !== "read") {
+      setErroAvaliacao("Para avaliar primeiro conclua a leitura");
       return;
     }
 
-    setSalvandoFavorito(true);
     setErroAvaliacao("");
+    setSalvandoFavorito(true);
     try {
       const res = await axios.patch(
         `${API_URL}/api/library/${itemBiblioteca.id}`,
@@ -329,7 +327,6 @@ export default function Detalhes(props) {
 
       {erroFavorito && <p className="erro detalhes-favorito-erro" role="status">{erroFavorito}</p>}
       {erroStatus && <p className="erro detalhes-status-erro" role="status">{erroStatus}</p>}
-      {erroAvaliacao && <p className="erro detalhes-avaliacao-erro" role="status">{erroAvaliacao}</p>}
 
       {carregando && (
         <div className="detalhes-conteudo">
@@ -351,6 +348,7 @@ export default function Detalhes(props) {
             )}
 
             <div className="detalhes-acoes-livro">
+              {erroAvaliacao && <p className="erro detalhes-avaliacao-erro" role="status">{erroAvaliacao}</p>}
               <div
                 className="detalhes-avaliacao"
                 role="group"
@@ -365,13 +363,13 @@ export default function Detalhes(props) {
                       key={nota}
                       type="button"
                       onClick={() => avaliarLivro(nota)}
-                      disabled={!avaliavel || carregandoFavorito || salvandoFavorito}
+                      disabled={carregandoFavorito || salvandoFavorito}
                       aria-label={`${nota} ${nota === 1 ? "estrela" : "estrelas"}`}
                       aria-pressed={itemBiblioteca?.rating === nota}
                       title={
                         avaliavel
                           ? `Avaliar com ${nota} ${nota === 1 ? "estrela" : "estrelas"}`
-                          : "Marque o livro como Lido para avaliar"
+                          : "Para avaliar primeiro conclua a leitura"
                       }
                     >
                       ★
