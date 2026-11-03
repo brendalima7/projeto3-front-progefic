@@ -54,12 +54,14 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 12px;
 }
 
 .detalhes-avaliacao {
   display: flex;
   width: 100%;
+  justify-content: center;
   gap: 3px;
 }
 
@@ -86,7 +88,9 @@
 }
 
 .detalhes-avaliacao-erro {
-  margin: 8px 0 0;
+  flex: 0 0 100%;
+  margin: 0;
+  text-align: center;
 }
 
 .detalhes-status-wrapper {
