@@ -121,6 +121,23 @@ export default function Detalhes(props) {
     };
   }, [mostrarAnotacoes, props.id, props.token]);
 
+  // Depois de um erro ao salvar, busca o item de novo pra tela mostrar o que está salvo de verdade
+  const recarregarItem = async (itemId) => {
+    try {
+      const res = await axios.get(`${API_URL}/api/library/${itemId}`, {
+        headers: { Authorization: `Bearer ${props.token}` },
+      });
+      setItemBiblioteca(res.data);
+      setFavorito(res.data.favorite);
+    } catch (error) {
+      // 404: o livro saiu da biblioteca (ex.: removido em outra aba)
+      if (error.response?.status === 404) {
+        setItemBiblioteca(null);
+        setFavorito(false);
+      }
+    }
+  };
+
   const alternarFavorito = async () => {
     if (!livro || carregandoFavorito || salvandoFavorito) return;
 
@@ -161,6 +178,7 @@ export default function Detalhes(props) {
       }
     } catch (error) {
       setErroFavorito(error.response?.data?.erro || "Não foi possível atualizar os favoritos");
+      if (itemBiblioteca) recarregarItem(itemBiblioteca.id);
     } finally {
       setSalvandoFavorito(false);
     }
@@ -202,6 +220,7 @@ export default function Detalhes(props) {
       }
     } catch (error) {
       setErroStatus(error.response?.data?.erro || "Não foi possível atualizar o status do livro");
+      if (itemBiblioteca) recarregarItem(itemBiblioteca.id);
     } finally {
       setSalvandoFavorito(false);
     }
@@ -226,6 +245,30 @@ export default function Detalhes(props) {
       setItemBiblioteca(res.data);
     } catch (error) {
       setErroAvaliacao(error.response?.data?.erro || "Não foi possível salvar a avaliação");
+      recarregarItem(itemBiblioteca.id);
+    } finally {
+      setSalvandoFavorito(false);
+    }
+  };
+
+  // DELETE: tira o livro da biblioteca (status, nota e favorito); as anotações continuam
+  const removerDaBiblioteca = async () => {
+    if (!itemBiblioteca || carregandoFavorito || salvandoFavorito) return;
+    if (!window.confirm("Remover este livro da sua biblioteca? O status, a nota e o favorito serão apagados.")) {
+      return;
+    }
+
+    setSalvandoFavorito(true);
+    setErroStatus("");
+    try {
+      await axios.delete(`${API_URL}/api/library/${itemBiblioteca.id}`, {
+        headers: { Authorization: `Bearer ${props.token}` },
+      });
+      setItemBiblioteca(null);
+      setFavorito(false);
+      setErroAvaliacao("");
+    } catch (error) {
+      setErroStatus(error.response?.data?.erro || "Não foi possível remover o livro da biblioteca");
     } finally {
       setSalvandoFavorito(false);
     }
@@ -489,6 +532,18 @@ export default function Detalhes(props) {
                   <path d="m15 5 4 4M4 20l4.5-1 11-11a2.1 2.1 0 0 0-4-4l-11 11L4 20Z" />
                 </svg>
               </button>
+
+              {/* Só aparece se o livro já estiver salvo na biblioteca */}
+              {itemBiblioteca && (
+                <button
+                  className="detalhes-remover"
+                  type="button"
+                  onClick={removerDaBiblioteca}
+                  disabled={carregandoFavorito || salvandoFavorito}
+                >
+                  Remover da biblioteca
+                </button>
+              )}
             </div>
           </div>
 

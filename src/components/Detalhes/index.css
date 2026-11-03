@@ -42,6 +42,21 @@
   margin: 8px 0 0;
 }
 
+/* "Remover da biblioteca": linha própria embaixo dos botões, discreto até passar o mouse */
+.detalhes-remover {
+  flex: 0 0 100%;
+  padding: 4px;
+  border: none;
+  background: none;
+  color: var(--cor-texto-suave);
+  font-size: 0.9em;
+}
+
+.detalhes-remover:hover:not(:disabled) {
+  color: var(--cor-erro);
+  text-decoration: underline;
+}
+
 .detalhes-capa-coluna {
   display: flex;
   flex: 0 0 300px;
